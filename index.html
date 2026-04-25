@@ -1,0 +1,1375 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>In Memory of Shinn-Der Chang · 永懷 張信德 · 1929–2023</title>
+  <meta name="description" content="A memorial for Shinn-Der Chang (1929–2023). Fuzhou · Nanping · Taipei · Kaohsiung · Ottawa · Port Hawkesbury · Toronto." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Noto+Serif+SC:wght@500;600;700&family=Noto+Serif+TC:wght@400;500;600&family=ZCOOL+XiaoWei&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css?v=27" />
+  <link rel="stylesheet" href="atlas.css?v=8" />
+
+  <style>
+    /* ============== Sticky top nav ============== */
+    .topnav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: clamp(0.5rem, 2vw, 1.5rem);
+      padding: 0.75rem clamp(1rem, 3vw, 2rem);
+      background: rgba(251, 250, 247, 0.88);
+      backdrop-filter: saturate(140%) blur(10px);
+      -webkit-backdrop-filter: saturate(140%) blur(10px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s ease, background 0.3s ease;
+    }
+    .topnav.is-stuck {
+      border-bottom-color: var(--rule);
+      background: rgba(251, 250, 247, 0.96);
+    }
+    .topnav-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 0.05rem;
+      text-decoration: none;
+      color: var(--ink);
+      flex: 0 0 auto;
+    }
+    .topnav-name {
+      font-family: "Noto Serif SC", "Noto Serif TC", serif;
+      font-weight: 600;
+      font-size: 1.45rem;
+      line-height: 1;
+      letter-spacing: 0.06em;
+    }
+    .topnav-dates {
+      font-family: var(--sans);
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .topnav-tabs {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: clamp(0.25rem, 1.4vw, 1rem);
+      flex: 1 1 auto;
+      justify-content: center;
+    }
+    .topnav-tab {
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 0;
+      color: var(--muted);
+      padding: 0.55rem 0.6rem;
+      border-bottom: 1.5px solid transparent;
+      cursor: pointer;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+    .topnav-tab:hover { color: var(--ink); }
+    .topnav-tab.is-active {
+      color: var(--ink);
+      border-bottom-color: var(--vermilion);
+    }
+    /* Language toggle — now lives inside the nav */
+    .lang-toggle {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      padding: 2px;
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      background: rgba(251, 250, 247, 0.5);
+    }
+    .lang-btn {
+      border: 0;
+      background: transparent;
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      cursor: pointer;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: inherit;
+      letter-spacing: inherit;
+      text-transform: uppercase;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .lang-btn[aria-pressed="true"] {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .lang-btn:hover:not([aria-pressed="true"]) { color: var(--ink); }
+    .lang-btn.zh { font-family: "Noto Serif TC", serif; letter-spacing: 0.08em; }
+
+    @media (max-width: 700px) {
+      .topnav-tab { font-size: 0.62rem; letter-spacing: 0.08em; padding: 0.45rem 0.3rem; }
+    }
+    @media (max-width: 500px) {
+      .topnav { gap: 0.3rem; padding: 0.55rem 0.7rem; }
+      .topnav-name { font-size: 1.2rem; }
+      .topnav-tabs { gap: 0.1rem; }
+      .topnav-tab { font-size: 0.55rem; letter-spacing: 0.05em; padding: 0.4rem 0.2rem; }
+      .lang-btn { padding: 0.3rem 0.5rem; font-size: 0.6rem; }
+    }
+
+    /* ============== Tabbed page system ============== */
+    /* The four tab views fill the viewport (minus the topnav) and are mutually exclusive.
+       The bridge-footer below them is the only thing the user can scroll to. */
+    .tabs {
+      display: block;
+      position: relative;
+    }
+    .tab-view {
+      display: none;
+      min-height: calc(100vh - 60px);   /* fill viewport under topnav */
+      min-height: calc(100svh - 60px);
+      position: relative;
+    }
+    .tab-view.is-active { display: block; }
+    .tab-view.is-active[data-tab="atlas"] { display: flex; flex-direction: column; }
+    /* Memoriam: hero fills viewport, no scroll within */
+    .tab-view[data-tab="memoriam"] {
+      height: calc(100vh - 60px);
+      height: calc(100svh - 60px);
+      max-height: calc(100vh - 60px);
+      max-height: calc(100svh - 60px);
+      overflow: hidden;
+    }
+    .tab-view[data-tab="memoriam"] .hero {
+      min-height: 0;
+      height: 100%;
+      max-width: 1300px;
+    }
+
+    /* Tributes/Photos: long content scrolls *within* the view so the bridge footer stays below the fold */
+    .tab-view[data-tab="tributes"],
+    .tab-view[data-tab="photos"] {
+      height: calc(100vh - 60px);
+      height: calc(100svh - 60px);
+      max-height: calc(100vh - 60px);
+      max-height: calc(100svh - 60px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    /* Strip the legacy section padding inside scrollable views (was designed for full-page scroll) */
+    .tab-view[data-tab="tributes"] .memoriam,
+    .tab-view[data-tab="photos"] .gallery {
+      padding-block: clamp(2rem, 4vw, 3.5rem);
+    }
+
+    /* ============== Bridge footer — full-bleed ink wash painting ==============
+       Sized so the natural max scroll lands the image's top exactly under the
+       sticky topnav (60px). This keeps the calligraphy 張信德 properly spaced
+       from the header instead of disappearing behind it. */
+    .bridge-footer {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 60px);
+      height: calc(100svh - 60px);
+      background: #ece5d4;
+      isolation: isolate;
+      overflow: hidden;
+    }
+    /* The image is 1536×1024 (3:2). Cap the stack to the same aspect ratio so
+       on screens wider than 3:2 the full image is shown top-to-bottom and the
+       cream bridge-footer background fills the leftover margins on the sides.
+       On screens narrower than 3:2 the stack uses the full width and object-fit
+       cover crops a small strip off the sides instead of the top. */
+    .bridge-stack {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin-inline: auto;
+      max-width: calc((100vh - 60px) * 1.5);
+      max-width: calc((100svh - 60px) * 1.5);
+      z-index: 0;
+    }
+    .bridge-bg-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      user-select: none;
+      opacity: 0;
+      transition: opacity 380ms ease-in-out;
+    }
+    .bridge-bg-img.is-active { opacity: 1; }
+
+    /* No on-image controls — keyboard arrows + touch swipe drive the carousel. */
+    .bridge-stack { touch-action: pan-y; }
+  </style>
+</head>
+<body>
+
+<!-- Shared SVG definitions for donggua (winter melon) and black-eyed Susans.
+     Included once in <body> so <use xlink:href="#..."/> can reference them. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+
+    <!-- ============================================================
+         DONGGUA (冬瓜) — winter melon cluster on a vine.
+         Style: botanical-illustration / ink wash. Muted celadon.
+         Three oblong gourds resting together with a vine, leaf,
+         and curling tendril above. Reads unmistakably as a vegetable
+         still-life.
+         ============================================================ -->
+    <symbol id="donggua" viewBox="0 0 260 200">
+      <!-- Vine / stem arching overhead -->
+      <path d="M 20 30 Q 80 10, 140 25 Q 200 38, 240 18"
+            fill="none" stroke="#6b5d4f" stroke-width="1.4"
+            stroke-linecap="round" opacity="0.75" />
+
+      <!-- Large leaf top-left -->
+      <g opacity="0.85">
+        <path d="M 22 32
+                 Q 8 38, 4 56
+                 Q 2 76, 18 82
+                 Q 38 84, 48 70
+                 Q 56 54, 48 40
+                 Q 36 28, 22 32 Z"
+              fill="#cfd6c0" stroke="#6b5d4f" stroke-width="1.1" stroke-linejoin="round" />
+        <!-- leaf veins -->
+        <path d="M 26 38 Q 34 58, 32 78" fill="none" stroke="#6b5d4f" stroke-width="0.7" opacity="0.7" />
+        <path d="M 14 48 Q 26 56, 42 60" fill="none" stroke="#6b5d4f" stroke-width="0.5" opacity="0.6" />
+        <path d="M 18 66 Q 30 68, 40 72" fill="none" stroke="#6b5d4f" stroke-width="0.5" opacity="0.6" />
+      </g>
+
+      <!-- Curling tendril top-right -->
+      <path d="M 235 22 Q 248 28, 244 40 Q 234 50, 240 60 Q 250 68, 244 78"
+            fill="none" stroke="#6b5d4f" stroke-width="1.1" stroke-linecap="round" opacity="0.75" />
+
+      <!-- Smaller back leaf, right -->
+      <g opacity="0.75">
+        <path d="M 210 44
+                 Q 224 44, 232 56
+                 Q 234 70, 222 76
+                 Q 208 78, 202 68
+                 Q 200 54, 210 44 Z"
+              fill="#c7cfb6" stroke="#6b5d4f" stroke-width="1" stroke-linejoin="round" />
+        <path d="M 212 50 Q 218 62, 216 74" fill="none" stroke="#6b5d4f" stroke-width="0.5" opacity="0.6" />
+      </g>
+
+      <!-- =============== Three gourds =============== -->
+      <!-- Back gourd (left, tilted) -->
+      <g transform="translate(50, 95) rotate(-10)">
+        <!-- stem nub -->
+        <path d="M -2 -4 Q 2 -12, 8 -10" fill="none" stroke="#6b5d4f" stroke-width="1.4" stroke-linecap="round" />
+        <!-- melon body: oblong ellipse -->
+        <ellipse cx="35" cy="28" rx="42" ry="22"
+                 fill="#c9d6c2" stroke="#5d6b58" stroke-width="1.3" />
+        <!-- highlight stripe (top) -->
+        <path d="M 5 18 Q 35 8, 68 20"
+              fill="none" stroke="#e3ead6" stroke-width="3.5" stroke-linecap="round" opacity="0.7" />
+        <!-- subtle shading underside -->
+        <path d="M 6 38 Q 35 50, 68 38"
+              fill="none" stroke="#7f8e74" stroke-width="2.2" stroke-linecap="round" opacity="0.35" />
+        <!-- powdery-bloom dots -->
+        <g fill="#5d6b58" opacity="0.32">
+          <circle cx="18" cy="24" r="0.9" /><circle cx="26" cy="32" r="0.7" />
+          <circle cx="34" cy="22" r="0.8" /><circle cx="44" cy="30" r="0.7" />
+          <circle cx="52" cy="24" r="0.9" /><circle cx="58" cy="34" r="0.7" />
+          <circle cx="22" cy="38" r="0.6" /><circle cx="40" cy="40" r="0.6" />
+          <circle cx="50" cy="38" r="0.6" />
+        </g>
+      </g>
+
+      <!-- Middle gourd (largest, front) -->
+      <g transform="translate(100, 100)">
+        <!-- stem nub -->
+        <path d="M 32 -6 Q 36 -16, 44 -14" fill="none" stroke="#6b5d4f" stroke-width="1.6" stroke-linecap="round" />
+        <!-- melon body -->
+        <ellipse cx="60" cy="34" rx="56" ry="28"
+                 fill="#cfdcc6" stroke="#5d6b58" stroke-width="1.5" />
+        <!-- belt / equator suggestion -->
+        <path d="M 8 34 Q 60 38, 112 34"
+              fill="none" stroke="#7f8e74" stroke-width="0.8" opacity="0.45" />
+        <!-- highlight -->
+        <path d="M 12 22 Q 60 8, 108 22"
+              fill="none" stroke="#e7edda" stroke-width="4" stroke-linecap="round" opacity="0.75" />
+        <!-- shade underside -->
+        <path d="M 10 48 Q 60 62, 110 48"
+              fill="none" stroke="#6d7b62" stroke-width="2.6" stroke-linecap="round" opacity="0.35" />
+        <!-- powdery bloom -->
+        <g fill="#5d6b58" opacity="0.3">
+          <circle cx="22" cy="28" r="1" /><circle cx="32" cy="36" r="0.7" />
+          <circle cx="42" cy="26" r="0.8" /><circle cx="54" cy="34" r="0.7" />
+          <circle cx="66" cy="24" r="0.9" /><circle cx="78" cy="32" r="0.7" />
+          <circle cx="88" cy="26" r="0.8" /><circle cx="100" cy="34" r="0.7" />
+          <circle cx="28" cy="44" r="0.7" /><circle cx="50" cy="46" r="0.7" />
+          <circle cx="72" cy="46" r="0.7" /><circle cx="94" cy="44" r="0.7" />
+        </g>
+      </g>
+
+      <!-- Right gourd (tilted right, smaller) -->
+      <g transform="translate(178, 108) rotate(12)">
+        <path d="M 0 -2 Q -4 -12, 4 -14" fill="none" stroke="#6b5d4f" stroke-width="1.4" stroke-linecap="round" />
+        <ellipse cx="30" cy="22" rx="36" ry="18"
+                 fill="#c5d2bc" stroke="#5d6b58" stroke-width="1.3" />
+        <path d="M 2 14 Q 30 4, 60 14"
+              fill="none" stroke="#e3ead6" stroke-width="3" stroke-linecap="round" opacity="0.65" />
+        <path d="M 4 30 Q 30 40, 58 30"
+              fill="none" stroke="#7f8e74" stroke-width="2" stroke-linecap="round" opacity="0.3" />
+        <g fill="#5d6b58" opacity="0.3">
+          <circle cx="14" cy="18" r="0.7" /><circle cx="24" cy="24" r="0.7" />
+          <circle cx="34" cy="16" r="0.8" /><circle cx="44" cy="24" r="0.7" />
+          <circle cx="52" cy="18" r="0.7" />
+        </g>
+      </g>
+
+      <!-- Ground line suggestion -->
+      <path d="M 30 168 Q 130 172, 230 166"
+            fill="none" stroke="#6b5d4f" stroke-width="0.6" stroke-dasharray="2 4" opacity="0.5" />
+    </symbol>
+
+    <!-- ============================================================
+         BLACK-EYED SUSAN (Rudbeckia) cluster — three blooms on stems.
+         Warm ochre-yellow petals, dark brown cones.
+         ============================================================ -->
+    <symbol id="blackeyed-susan" viewBox="0 0 220 260">
+      <!-- Stems -->
+      <path d="M 70 250 Q 66 200, 74 150 Q 78 110, 72 70"
+            fill="none" stroke="#5f6b3e" stroke-width="1.6" stroke-linecap="round" />
+      <path d="M 130 255 Q 134 200, 126 160 Q 122 125, 130 95"
+            fill="none" stroke="#5f6b3e" stroke-width="1.4" stroke-linecap="round" />
+      <path d="M 170 255 Q 172 210, 166 180 Q 160 150, 168 130"
+            fill="none" stroke="#5f6b3e" stroke-width="1.3" stroke-linecap="round" />
+
+      <!-- Lance-shaped leaves -->
+      <g fill="#8d9960" stroke="#5f6b3e" stroke-width="0.9" stroke-linejoin="round" opacity="0.85">
+        <path d="M 72 160
+                 Q 50 158, 38 170
+                 Q 46 176, 60 174
+                 Q 70 170, 72 160 Z" />
+        <path d="M 126 185
+                 Q 148 182, 158 194
+                 Q 150 200, 136 198
+                 Q 128 194, 126 185 Z" />
+        <path d="M 74 210
+                 Q 92 210, 102 220
+                 Q 94 226, 82 224
+                 Q 76 218, 74 210 Z" />
+        <path d="M 166 220
+                 Q 184 222, 192 232
+                 Q 184 238, 172 234
+                 Q 166 228, 166 220 Z" />
+      </g>
+
+      <!-- Flower 1 (top-left, largest) -->
+      <g transform="translate(72, 68)">
+        <!-- Petals -->
+        <g fill="#c98a2e" stroke="#8a5a1c" stroke-width="0.8" stroke-linejoin="round">
+          <ellipse cx="0" cy="-28" rx="6" ry="20" />
+          <ellipse cx="20" cy="-20" rx="6" ry="20" transform="rotate(36 20 -20)" />
+          <ellipse cx="30" cy="0" rx="6" ry="20" transform="rotate(72 30 0)" />
+          <ellipse cx="20" cy="20" rx="6" ry="20" transform="rotate(108 20 20)" />
+          <ellipse cx="0" cy="28" rx="6" ry="20" />
+          <ellipse cx="-20" cy="20" rx="6" ry="20" transform="rotate(-108 -20 20)" />
+          <ellipse cx="-30" cy="0" rx="6" ry="20" transform="rotate(-72 -30 0)" />
+          <ellipse cx="-20" cy="-20" rx="6" ry="20" transform="rotate(-36 -20 -20)" />
+        </g>
+        <!-- Inner petal layer (warm deeper ring for depth) -->
+        <g fill="#b97420" opacity="0.5">
+          <ellipse cx="-12" cy="-12" rx="3" ry="10" transform="rotate(-36 -12 -12)" />
+          <ellipse cx="12" cy="-12" rx="3" ry="10" transform="rotate(36 12 -12)" />
+          <ellipse cx="12" cy="12" rx="3" ry="10" transform="rotate(108 12 12)" />
+          <ellipse cx="-12" cy="12" rx="3" ry="10" transform="rotate(-108 -12 12)" />
+        </g>
+        <!-- Dark cone center -->
+        <circle cx="0" cy="0" r="9" fill="#3c2a1a" />
+        <!-- tiny texture stipples on cone -->
+        <g fill="#1a1008" opacity="0.6">
+          <circle cx="-3" cy="-2" r="0.9" /><circle cx="2" cy="-3" r="0.8" />
+          <circle cx="4" cy="2" r="0.9" /><circle cx="-2" cy="3" r="0.8" />
+          <circle cx="0" cy="0" r="0.8" />
+        </g>
+      </g>
+
+      <!-- Flower 2 (middle) -->
+      <g transform="translate(130, 92)">
+        <g fill="#c98a2e" stroke="#8a5a1c" stroke-width="0.7" stroke-linejoin="round">
+          <ellipse cx="0" cy="-22" rx="5" ry="16" />
+          <ellipse cx="16" cy="-16" rx="5" ry="16" transform="rotate(36 16 -16)" />
+          <ellipse cx="24" cy="0" rx="5" ry="16" transform="rotate(72 24 0)" />
+          <ellipse cx="16" cy="16" rx="5" ry="16" transform="rotate(108 16 16)" />
+          <ellipse cx="0" cy="22" rx="5" ry="16" />
+          <ellipse cx="-16" cy="16" rx="5" ry="16" transform="rotate(-108 -16 16)" />
+          <ellipse cx="-24" cy="0" rx="5" ry="16" transform="rotate(-72 -24 0)" />
+          <ellipse cx="-16" cy="-16" rx="5" ry="16" transform="rotate(-36 -16 -16)" />
+        </g>
+        <circle cx="0" cy="0" r="7" fill="#3c2a1a" />
+        <g fill="#1a1008" opacity="0.6">
+          <circle cx="-2" cy="-1" r="0.7" /><circle cx="2" cy="-2" r="0.7" />
+          <circle cx="2" cy="2" r="0.7" /><circle cx="-2" cy="2" r="0.7" />
+        </g>
+      </g>
+
+      <!-- Flower 3 (right, smaller bud-like, side-view) -->
+      <g transform="translate(168, 128) rotate(-18)">
+        <g fill="#c98a2e" stroke="#8a5a1c" stroke-width="0.6" stroke-linejoin="round">
+          <ellipse cx="0" cy="-16" rx="4" ry="12" />
+          <ellipse cx="12" cy="-10" rx="4" ry="12" transform="rotate(36 12 -10)" />
+          <ellipse cx="18" cy="0" rx="4" ry="12" transform="rotate(72 18 0)" />
+          <ellipse cx="12" cy="10" rx="4" ry="12" transform="rotate(108 12 10)" />
+          <ellipse cx="0" cy="16" rx="4" ry="12" />
+          <ellipse cx="-12" cy="10" rx="4" ry="12" transform="rotate(-108 -12 10)" />
+          <ellipse cx="-18" cy="0" rx="4" ry="12" transform="rotate(-72 -18 0)" />
+          <ellipse cx="-12" cy="-10" rx="4" ry="12" transform="rotate(-36 -12 -10)" />
+        </g>
+        <circle cx="0" cy="0" r="5.5" fill="#3c2a1a" />
+      </g>
+    </symbol>
+
+    <!-- Small combined tile for gallery accent: single flower, compact -->
+    <symbol id="single-flower" viewBox="0 0 100 120">
+      <path d="M 50 118 Q 48 80, 52 50" fill="none" stroke="#5f6b3e" stroke-width="1.3" stroke-linecap="round" />
+      <path d="M 52 90 Q 68 88, 76 98 Q 68 104, 56 100 Z"
+            fill="#8d9960" stroke="#5f6b3e" stroke-width="0.8" stroke-linejoin="round" />
+      <g transform="translate(50, 46)">
+        <g fill="#c98a2e" stroke="#8a5a1c" stroke-width="0.6" stroke-linejoin="round">
+          <ellipse cx="0" cy="-20" rx="5" ry="15" />
+          <ellipse cx="14" cy="-14" rx="5" ry="15" transform="rotate(36 14 -14)" />
+          <ellipse cx="22" cy="0" rx="5" ry="15" transform="rotate(72 22 0)" />
+          <ellipse cx="14" cy="14" rx="5" ry="15" transform="rotate(108 14 14)" />
+          <ellipse cx="0" cy="20" rx="5" ry="15" />
+          <ellipse cx="-14" cy="14" rx="5" ry="15" transform="rotate(-108 -14 14)" />
+          <ellipse cx="-22" cy="0" rx="5" ry="15" transform="rotate(-72 -22 0)" />
+          <ellipse cx="-14" cy="-14" rx="5" ry="15" transform="rotate(-36 -14 -14)" />
+        </g>
+        <circle cx="0" cy="0" r="6.5" fill="#3c2a1a" />
+      </g>
+    </symbol>
+
+    <!-- ============================================================
+         DONGGUA VARIANT — single melon "portrait", oblong gourd
+         resting alone with a leaf and tendril. For tighter framings.
+         ============================================================ -->
+    <symbol id="donggua-single" viewBox="0 0 200 140">
+      <!-- vine arc -->
+      <path d="M 18 30 Q 90 12, 180 28" fill="none" stroke="#6b5d4f" stroke-width="1.2" stroke-linecap="round" opacity="0.7" />
+      <!-- back leaf -->
+      <g opacity="0.78">
+        <path d="M 24 30
+                 Q 8 38, 6 58
+                 Q 8 74, 24 78
+                 Q 42 76, 48 60
+                 Q 50 44, 38 32
+                 Q 30 28, 24 30 Z"
+              fill="#cfd6c0" stroke="#6b5d4f" stroke-width="1" stroke-linejoin="round" />
+        <path d="M 28 36 Q 32 56, 28 74" fill="none" stroke="#6b5d4f" stroke-width="0.6" opacity="0.7" />
+      </g>
+      <!-- tendril -->
+      <path d="M 178 28 Q 188 36, 184 48 Q 174 56, 180 66"
+            fill="none" stroke="#6b5d4f" stroke-width="1" stroke-linecap="round" opacity="0.7" />
+      <!-- main melon -->
+      <g transform="translate(48, 42)">
+        <path d="M 28 0 Q 32 -10, 40 -8" fill="none" stroke="#6b5d4f" stroke-width="1.5" stroke-linecap="round" />
+        <ellipse cx="56" cy="36" rx="56" ry="28" fill="#cfdcc6" stroke="#5d6b58" stroke-width="1.4" />
+        <!-- subtle top highlight -->
+        <path d="M 8 24 Q 56 10, 104 24" fill="none" stroke="#e7edda" stroke-width="3.6" stroke-linecap="round" opacity="0.7" />
+        <!-- equator -->
+        <path d="M 6 36 Q 56 40, 106 36" fill="none" stroke="#7f8e74" stroke-width="0.7" opacity="0.4" />
+        <!-- shade -->
+        <path d="M 8 50 Q 56 62, 104 50" fill="none" stroke="#6d7b62" stroke-width="2.4" stroke-linecap="round" opacity="0.35" />
+        <!-- powdery bloom dots -->
+        <g fill="#5d6b58" opacity="0.32">
+          <circle cx="20" cy="30" r="0.9" /><circle cx="30" cy="38" r="0.7" />
+          <circle cx="40" cy="28" r="0.8" /><circle cx="52" cy="36" r="0.7" />
+          <circle cx="64" cy="26" r="0.9" /><circle cx="76" cy="34" r="0.7" />
+          <circle cx="86" cy="28" r="0.8" /><circle cx="96" cy="36" r="0.7" />
+          <circle cx="26" cy="46" r="0.6" /><circle cx="48" cy="48" r="0.6" />
+          <circle cx="70" cy="48" r="0.6" /><circle cx="92" cy="46" r="0.6" />
+        </g>
+      </g>
+      <!-- ground line -->
+      <path d="M 28 122 Q 100 126, 174 120" fill="none" stroke="#6b5d4f" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.5" />
+    </symbol>
+
+    <!-- ============================================================
+         DONGGUA VARIANT — sliced cross-section.
+         An oval slice showing pale flesh, dark seeds, rind ring.
+         Reads as a botanical illustration plate.
+         ============================================================ -->
+    <symbol id="donggua-slice" viewBox="0 0 180 140">
+      <!-- back rind half (seen from cut side) -->
+      <ellipse cx="90" cy="74" rx="68" ry="46"
+               fill="#e9eee0" stroke="#5d6b58" stroke-width="1.4" />
+      <!-- inner rind ring -->
+      <ellipse cx="90" cy="74" rx="60" ry="40"
+               fill="none" stroke="#aebca2" stroke-width="0.9" opacity="0.8" />
+      <!-- innermost flesh oval -->
+      <ellipse cx="90" cy="74" rx="46" ry="28"
+               fill="#f4f7eb" stroke="#aebca2" stroke-width="0.6" opacity="0.9" />
+      <!-- seeds in central oval -->
+      <g fill="#867a4d" stroke="#3a3526" stroke-width="0.5">
+        <ellipse cx="78" cy="68" rx="3" ry="4.5" transform="rotate(-22 78 68)" />
+        <ellipse cx="92" cy="64" rx="3" ry="4.5" transform="rotate(8 92 64)" />
+        <ellipse cx="104" cy="70" rx="3" ry="4.5" transform="rotate(28 104 70)" />
+        <ellipse cx="84" cy="80" rx="3" ry="4.5" transform="rotate(-10 84 80)" />
+        <ellipse cx="98" cy="82" rx="3" ry="4.5" transform="rotate(18 98 82)" />
+        <ellipse cx="72" cy="78" rx="3" ry="4.5" transform="rotate(-30 72 78)" />
+        <ellipse cx="110" cy="80" rx="3" ry="4.5" transform="rotate(36 110 80)" />
+      </g>
+      <!-- rind powder dots -->
+      <g fill="#5d6b58" opacity="0.3">
+        <circle cx="36" cy="60" r="0.8" /><circle cx="32" cy="78" r="0.7" />
+        <circle cx="42" cy="92" r="0.7" /><circle cx="60" cy="100" r="0.6" />
+        <circle cx="80" cy="106" r="0.7" /><circle cx="100" cy="106" r="0.6" />
+        <circle cx="120" cy="100" r="0.7" /><circle cx="138" cy="92" r="0.6" />
+        <circle cx="148" cy="78" r="0.7" /><circle cx="144" cy="60" r="0.6" />
+        <circle cx="132" cy="48" r="0.7" /><circle cx="116" cy="42" r="0.6" />
+        <circle cx="98" cy="40" r="0.6" /><circle cx="78" cy="40" r="0.7" />
+        <circle cx="60" cy="44" r="0.6" /><circle cx="46" cy="50" r="0.7" />
+      </g>
+      <!-- caption tick -->
+      <line x1="20" y1="128" x2="44" y2="128" stroke="#6b5d4f" stroke-width="0.5" opacity="0.55" />
+      <text x="48" y="131" font-family="EB Garamond" font-size="9" fill="#6b5d4f" font-style="italic" opacity="0.7">冬瓜 · winter melon</text>
+    </symbol>
+
+    <!-- ============================================================
+         DONGGUA VARIANT — vine with hanging gourd, tendrils, bud.
+         Tall, thin format — for column-edge decoration.
+         ============================================================ -->
+    <symbol id="donggua-vine" viewBox="0 0 100 320">
+      <!-- main vine -->
+      <path d="M 50 6 Q 32 60, 48 110 Q 64 158, 44 210 Q 30 256, 52 310"
+            fill="none" stroke="#6b5d4f" stroke-width="1.4" stroke-linecap="round" opacity="0.78" />
+
+      <!-- tendrils -->
+      <path d="M 38 80 Q 22 86, 24 100 Q 36 108, 26 122"
+            fill="none" stroke="#6b5d4f" stroke-width="0.9" stroke-linecap="round" opacity="0.7" />
+      <path d="M 60 168 Q 78 176, 76 192 Q 64 200, 76 214"
+            fill="none" stroke="#6b5d4f" stroke-width="0.9" stroke-linecap="round" opacity="0.7" />
+
+      <!-- top leaf -->
+      <g opacity="0.85">
+        <path d="M 56 24
+                 Q 76 20, 84 36
+                 Q 86 54, 72 60
+                 Q 56 60, 50 48
+                 Q 46 30, 56 24 Z"
+              fill="#cfd6c0" stroke="#6b5d4f" stroke-width="0.9" stroke-linejoin="round" />
+        <path d="M 60 28 Q 68 44, 66 58" fill="none" stroke="#6b5d4f" stroke-width="0.5" opacity="0.6" />
+      </g>
+      <!-- bud / small flower -->
+      <g transform="translate(28, 72)">
+        <path d="M 0 0 Q -5 -5, 0 -10 Q 5 -5, 0 0 Z" fill="#f3e7a6" stroke="#a98e3c" stroke-width="0.6" />
+      </g>
+      <!-- middle leaf -->
+      <g opacity="0.78">
+        <path d="M 32 152
+                 Q 14 154, 10 170
+                 Q 14 184, 28 188
+                 Q 42 184, 42 170
+                 Q 40 154, 32 152 Z"
+              fill="#c7cfb6" stroke="#6b5d4f" stroke-width="0.9" stroke-linejoin="round" />
+      </g>
+      <!-- hanging gourd -->
+      <g transform="translate(28, 220)">
+        <!-- stem -->
+        <path d="M 22 0 Q 26 -8, 32 -8" fill="none" stroke="#6b5d4f" stroke-width="1.3" stroke-linecap="round" />
+        <ellipse cx="28" cy="28" rx="26" ry="44" fill="#cfdcc6" stroke="#5d6b58" stroke-width="1.2" />
+        <path d="M 8 14 Q 28 6, 48 14" fill="none" stroke="#e7edda" stroke-width="3" stroke-linecap="round" opacity="0.7" />
+        <path d="M 8 50 Q 28 62, 48 50" fill="none" stroke="#6d7b62" stroke-width="2" stroke-linecap="round" opacity="0.35" />
+        <g fill="#5d6b58" opacity="0.3">
+          <circle cx="16" cy="20" r="0.7" /><circle cx="24" cy="28" r="0.6" />
+          <circle cx="34" cy="20" r="0.7" /><circle cx="42" cy="32" r="0.6" />
+          <circle cx="20" cy="40" r="0.6" /><circle cx="36" cy="44" r="0.6" />
+          <circle cx="28" cy="52" r="0.6" />
+        </g>
+      </g>
+    </symbol>
+
+    <!-- ============================================================
+         DONGGUA VARIANT — small icon (single oblong gourd, no leaves)
+         for tiny accents and inline glyphs.
+         ============================================================ -->
+    <symbol id="donggua-icon" viewBox="0 0 80 50">
+      <path d="M 30 6 Q 34 0, 40 2" fill="none" stroke="#6b5d4f" stroke-width="1.3" stroke-linecap="round" />
+      <ellipse cx="40" cy="26" rx="32" ry="16" fill="#cfdcc6" stroke="#5d6b58" stroke-width="1.2" />
+      <path d="M 12 18 Q 40 10, 70 18" fill="none" stroke="#e7edda" stroke-width="2.5" stroke-linecap="round" opacity="0.7" />
+      <path d="M 12 36 Q 40 44, 70 36" fill="none" stroke="#6d7b62" stroke-width="1.6" stroke-linecap="round" opacity="0.35" />
+    </symbol>
+
+    <!-- ============================================================
+         BRIDGE AT DAWN — sketch of the through-truss bridge near the
+         cottage. Steel diagonals, mist on water, soft pre-dawn sky.
+         Loosely modeled on the Aug 2025 cottage photo.
+         ============================================================ -->
+    <symbol id="cottage-bridge" viewBox="0 0 800 380">
+      <!-- soft sky wash -->
+      <defs>
+        <linearGradient id="sky-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"  stop-color="#e9d6b8" />
+          <stop offset="55%" stop-color="#dfd2bc" />
+          <stop offset="100%" stop-color="#c9bfae" />
+        </linearGradient>
+        <linearGradient id="water-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#d6cfc1" />
+          <stop offset="100%" stop-color="#b9b3a6" />
+        </linearGradient>
+      </defs>
+
+      <!-- sky -->
+      <rect x="0" y="0" width="800" height="220" fill="url(#sky-grad)" opacity="0.85" />
+      <!-- distant tree line on far bank -->
+      <path d="M 0 200 Q 60 188, 120 198 Q 180 188, 240 200 Q 300 192, 360 202 Q 420 192, 480 200
+               Q 540 190, 600 200 Q 660 192, 720 200 Q 760 198, 800 200 L 800 220 L 0 220 Z"
+            fill="#5b544a" opacity="0.55" />
+      <!-- subtle band below tree line -->
+      <rect x="0" y="218" width="800" height="6" fill="#3d3a32" opacity="0.4" />
+
+      <!-- water -->
+      <rect x="0" y="220" width="800" height="160" fill="url(#water-grad)" opacity="0.85" />
+      <!-- ripple lines -->
+      <g stroke="#857e73" stroke-width="0.5" fill="none" opacity="0.6">
+        <path d="M 40 244 Q 200 240, 360 246 Q 540 252, 760 244" />
+        <path d="M 0 268 Q 220 264, 440 272 Q 640 278, 800 270" />
+        <path d="M 60 296 Q 240 292, 420 300 Q 600 306, 760 298" />
+        <path d="M 0 324 Q 200 320, 380 328 Q 560 334, 800 326" />
+        <path d="M 40 350 Q 220 346, 400 354 Q 600 360, 800 352" />
+      </g>
+
+      <!-- mist swathe just above water -->
+      <rect x="0" y="200" width="800" height="40" fill="#f0ece4" opacity="0.45" />
+      <rect x="0" y="208" width="800" height="22" fill="#f7f3ec" opacity="0.45" />
+
+      <!-- ============== BRIDGE ============== -->
+      <!-- bridge deck (horizontal beam) -->
+      <line x1="80"  y1="218" x2="720" y2="218" stroke="#2a2620" stroke-width="2.6" />
+      <line x1="80"  y1="222" x2="720" y2="222" stroke="#2a2620" stroke-width="1.4" />
+
+      <!-- piers / abutments -->
+      <rect x="74" y="218" width="14" height="60" fill="#2a2620" />
+      <rect x="712" y="218" width="14" height="60" fill="#2a2620" />
+
+      <!-- top chord (curving slightly higher in middle for depth) -->
+      <path d="M 80 218 Q 100 130, 140 130 L 660 130 Q 700 130, 720 218"
+            fill="none" stroke="#2a2620" stroke-width="2.6" />
+      <path d="M 80 222 Q 102 134, 140 134 L 660 134 Q 698 134, 720 222"
+            fill="none" stroke="#2a2620" stroke-width="1.2" opacity="0.6" />
+
+      <!-- vertical truss posts evenly spaced -->
+      <g stroke="#2a2620" stroke-width="1.6">
+        <line x1="140" y1="130" x2="140" y2="218" />
+        <line x1="200" y1="130" x2="200" y2="218" />
+        <line x1="260" y1="130" x2="260" y2="218" />
+        <line x1="320" y1="130" x2="320" y2="218" />
+        <line x1="380" y1="130" x2="380" y2="218" />
+        <line x1="440" y1="130" x2="440" y2="218" />
+        <line x1="500" y1="130" x2="500" y2="218" />
+        <line x1="560" y1="130" x2="560" y2="218" />
+        <line x1="620" y1="130" x2="620" y2="218" />
+        <line x1="660" y1="130" x2="660" y2="218" />
+      </g>
+      <!-- diagonal cross-bracing (Pratt-style: alternating direction each panel) -->
+      <g stroke="#2a2620" stroke-width="1.4" opacity="0.95">
+        <line x1="140" y1="218" x2="200" y2="130" />
+        <line x1="260" y1="218" x2="200" y2="130" />
+        <line x1="260" y1="218" x2="320" y2="130" />
+        <line x1="380" y1="218" x2="320" y2="130" />
+        <line x1="380" y1="218" x2="440" y2="130" />
+        <line x1="500" y1="218" x2="440" y2="130" />
+        <line x1="500" y1="218" x2="560" y2="130" />
+        <line x1="620" y1="218" x2="560" y2="130" />
+        <line x1="620" y1="218" x2="660" y2="130" />
+      </g>
+      <!-- portal end struts (entry frame) -->
+      <line x1="80"  y1="218" x2="140" y2="130" stroke="#2a2620" stroke-width="2" />
+      <line x1="720" y1="218" x2="660" y2="130" stroke="#2a2620" stroke-width="2" />
+      <!-- top horizontal bracing dashes -->
+      <g stroke="#2a2620" stroke-width="0.8" opacity="0.7">
+        <line x1="140" y1="138" x2="200" y2="138" stroke-dasharray="3 3" />
+        <line x1="200" y1="138" x2="260" y2="138" stroke-dasharray="3 3" />
+        <line x1="260" y1="138" x2="320" y2="138" stroke-dasharray="3 3" />
+        <line x1="320" y1="138" x2="380" y2="138" stroke-dasharray="3 3" />
+        <line x1="380" y1="138" x2="440" y2="138" stroke-dasharray="3 3" />
+        <line x1="440" y1="138" x2="500" y2="138" stroke-dasharray="3 3" />
+        <line x1="500" y1="138" x2="560" y2="138" stroke-dasharray="3 3" />
+        <line x1="560" y1="138" x2="620" y2="138" stroke-dasharray="3 3" />
+        <line x1="620" y1="138" x2="660" y2="138" stroke-dasharray="3 3" />
+      </g>
+
+      <!-- reflection in water (faint mirror) -->
+      <g opacity="0.18">
+        <line x1="80"  y1="222" x2="720" y2="222" stroke="#2a2620" stroke-width="2.4" />
+        <path d="M 80 224 Q 100 312, 140 312 L 660 312 Q 700 312, 720 224"
+              fill="none" stroke="#2a2620" stroke-width="2" />
+        <g stroke="#2a2620" stroke-width="1">
+          <line x1="140" y1="224" x2="140" y2="312" />
+          <line x1="200" y1="224" x2="200" y2="312" />
+          <line x1="260" y1="224" x2="260" y2="312" />
+          <line x1="320" y1="224" x2="320" y2="312" />
+          <line x1="380" y1="224" x2="380" y2="312" />
+          <line x1="440" y1="224" x2="440" y2="312" />
+          <line x1="500" y1="224" x2="500" y2="312" />
+          <line x1="560" y1="224" x2="560" y2="312" />
+          <line x1="620" y1="224" x2="620" y2="312" />
+          <line x1="660" y1="224" x2="660" y2="312" />
+        </g>
+      </g>
+
+      <!-- a single dawn bird silhouette -->
+      <path d="M 110 70 Q 116 66, 122 70 Q 128 66, 134 70" fill="none" stroke="#2a2620" stroke-width="1" opacity="0.6" />
+
+      <!-- caption tick (illustration mark) -->
+      <line x1="40" y1="362" x2="80" y2="362" stroke="#5b544a" stroke-width="0.6" opacity="0.6" />
+    </symbol>
+
+  </defs>
+</svg>
+
+
+
+  <!-- ============ STICKY TOP NAV ============ -->
+  <nav class="topnav" aria-label="Section tabs">
+    <a class="topnav-brand" href="#top">
+      <span class="topnav-name" lang="zh-Hans">张信德</span>
+    </a>
+    <ol class="topnav-tabs" role="tablist">
+      <li><button class="topnav-tab is-active" type="button" data-tab="memoriam" role="tab" aria-selected="true"><span data-en="In Memoriam" data-zh="永 怀">In Memoriam</span></button></li>
+      <li><button class="topnav-tab" type="button" data-tab="atlas" role="tab" aria-selected="false"><span data-en="Atlas" data-zh="生命地图">Atlas</span></button></li>
+      <li><button class="topnav-tab" type="button" data-tab="tributes" role="tab" aria-selected="false"><span data-en="Tributes" data-zh="追 思">Tributes</span></button></li>
+      <li><button class="topnav-tab" type="button" data-tab="photos" role="tab" aria-selected="false"><span data-en="Photos" data-zh="相 册">Photos</span></button></li>
+    </ol>
+    <div class="lang-toggle" role="group" aria-label="Language toggle">
+      <button class="lang-btn en" data-lang="en" aria-pressed="true">EN</button>
+      <button class="lang-btn zh" data-lang="zh" aria-pressed="false">中文</button>
+    </div>
+  </nav>
+
+  <main class="tabs" id="top">
+
+  <!-- ============ TAB: IN MEMORIAM ============ -->
+  <section class="tab-view is-active" data-tab="memoriam" data-screen-label="In Memoriam">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <figure class="hero-portrait">
+      <img src="images/portrait-gardening.png" alt="Portrait of Shinn-Der Chang in his garden, with calligraphy 張信德 and red seal" />
+    </figure>
+
+    <div class="hero-text">
+      <div class="hero-eyebrow" data-en="In Memoriam" data-zh="永 懷">In Memoriam</div>
+
+      <h1 class="hero-en-name">Shinn-Der Chang</h1>
+
+      <div class="hero-lifespan" aria-label="1929 to 2023">
+        <span class="hero-year">1929</span>
+        <span class="hero-rule" aria-hidden="true"></span>
+        <span class="hero-year">2023</span>
+      </div>
+
+      <p class="hero-prose" data-en="A scholar from coastal Fujian, war-displaced inland and across an ocean. An engineer who built towers and heavy-water plants. A grandfather who tended a garden in Ontario for twenty years." data-zh="生於福建沿海，因戰亂遷往內陸；後渡海重洋。一位攀塔而上的工程師，一位建造重水廠的人。最後在安大略守著一座花園，整整二十年。">A scholar from coastal Fujian, war-displaced inland and across an ocean. An engineer who built towers and heavy-water plants. A grandfather who tended a garden in Ontario for twenty years.</p>
+
+      <blockquote class="hero-quote">
+        <span data-en="I have been blessed. I have no regrets. My life has been beautiful." data-zh="我蒙受恩典。我無憾。我的一生是美好的。">I have been blessed. I have no regrets. My life has been beautiful.</span>
+        <cite data-en="Shinn-Der Chang, April 2023" data-zh="張信德　二〇二三年四月">Shinn-Der Chang, April 2023</cite>
+      </blockquote>
+    </div>
+  </header>
+
+  </section><!-- /.tab-view memoriam -->
+
+  <!-- ============ TAB: ATLAS ============ -->
+  <section class="tab-view" data-tab="atlas" data-screen-label="Atlas">
+
+    <!-- The atlas: a single card containing toolbar + chapter panel (no map) -->
+    <div class="atlas-frame" data-active-chapter="0">
+
+      <!-- Top control bar: chapter index + arrows -->
+      <div class="atlas-toolbar">
+        <button class="atlas-prev atlas-prev-top" type="button" aria-label="Previous chapter">
+          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M9 2 L4 7 L9 12" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+        </button>
+
+        <nav class="atlas-index" aria-label="Chapter index">
+          <button class="atlas-idx" data-chapter="0" type="button">
+            <span class="atlas-idx-num">01</span>
+            <span class="atlas-idx-year">1929</span>
+            <span class="atlas-idx-city">Fuzhou</span>
+          </button>
+          <button class="atlas-idx" data-chapter="1" type="button">
+            <span class="atlas-idx-num">02</span>
+            <span class="atlas-idx-year">1937</span>
+            <span class="atlas-idx-city">Nanping</span>
+          </button>
+          <button class="atlas-idx" data-chapter="2" type="button">
+            <span class="atlas-idx-num">03</span>
+            <span class="atlas-idx-year">1948</span>
+            <span class="atlas-idx-city">Taipei</span>
+          </button>
+          <button class="atlas-idx" data-chapter="3" type="button">
+            <span class="atlas-idx-num">04</span>
+            <span class="atlas-idx-year">1959</span>
+            <span class="atlas-idx-city">Kaohsiung</span>
+          </button>
+          <button class="atlas-idx" data-chapter="4" type="button">
+            <span class="atlas-idx-num">05</span>
+            <span class="atlas-idx-year">1963</span>
+            <span class="atlas-idx-city">Ottawa</span>
+          </button>
+          <button class="atlas-idx" data-chapter="5" type="button">
+            <span class="atlas-idx-num">06</span>
+            <span class="atlas-idx-year">1969</span>
+            <span class="atlas-idx-city">Port Hawkesbury</span>
+          </button>
+          <button class="atlas-idx" data-chapter="6" type="button">
+            <span class="atlas-idx-num">07</span>
+            <span class="atlas-idx-year">1995</span>
+            <span class="atlas-idx-city">Toronto</span>
+          </button>
+        </nav>
+
+        <button class="atlas-next atlas-next-top" type="button" aria-label="Next chapter">
+          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M5 2 L10 7 L5 12" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div class="atlas-body">
+
+      <!-- ============ MAP COLUMN ============ -->
+      <div class="atlas-map" data-active-region="china">
+        <div class="atlas-map-stage" data-region="china">
+          <svg class="atlas-map-svg" data-which="china" aria-hidden="true"></svg>
+          <svg class="atlas-map-trail" data-which="china" aria-hidden="true"></svg>
+          <svg class="atlas-map-pins" data-which="china"></svg>
+        </div>
+        <div class="atlas-map-stage" data-region="taiwan">
+          <svg class="atlas-map-svg" data-which="taiwan" aria-hidden="true"></svg>
+          <svg class="atlas-map-trail" data-which="taiwan" aria-hidden="true"></svg>
+          <svg class="atlas-map-pins" data-which="taiwan"></svg>
+        </div>
+        <div class="atlas-map-stage" data-region="canada">
+          <svg class="atlas-map-svg" data-which="canada" aria-hidden="true"></svg>
+          <svg class="atlas-map-trail" data-which="canada" aria-hidden="true"></svg>
+          <svg class="atlas-map-pins" data-which="canada"></svg>
+        </div>
+        <div class="atlas-map-label">
+          <span class="atlas-map-region" data-en="China" data-zh="中國">China</span>
+          <span class="atlas-map-city"></span>
+        </div>
+      </div>
+
+      <!-- ============ CHAPTER PANEL ============ -->
+      <aside class="atlas-panel">
+
+        <!-- Chapter content stack (one shown at a time) -->
+        <div class="atlas-chapters">
+
+          <!-- ============ Ch 01 · Fuzhou ============ -->
+          <article class="ach" data-chapter="0" data-region="china" data-city="Fuzhou" data-coords="119.2965,26.0745" data-screen-label="Ch 01 · Fuzhou">
+            <header class="ach-head">
+              <div class="ach-num">I.</div>
+              <div class="ach-year" data-en="1929 · Fuzhou, Fujian" data-zh="一九二九年 · 福州 · 福建">1929 · Fuzhou, Fujian</div>
+              <h3 class="ach-title"><span data-en="A restaurant on Nan Jie" data-zh="南街上的一家餐館">A restaurant on Nan Jie</span> <span class="han">南街</span></h3>
+            </header>
+
+            <blockquote class="ach-quote">
+              <span data-en="&ldquo;My grandmother was a gardener. She was blind from the age of forty, and she raised me.&rdquo;" data-zh="「我的祖母是位園丁。她四十歲起便失明，是她把我養大的。」">&ldquo;My grandmother was a gardener. She was blind from the age of forty, and she raised me.&rdquo;</span>
+              <cite data-en="Shinn-Der, 2022" data-zh="信德　二〇二二年">Shinn-Der, 2022</cite>
+            </blockquote>
+
+            <div class="ach-body">
+              <p data-en="He was born in 1929 in Fuzhou, on the southeastern coast of China. His father owned the largest restaurant on the city's main shopping street — Nan Xiong on Nan Jie — a place that stretched more than eight storefronts deep behind its facade. As a small child, he sat in the accountant's office and counted money."
+                 data-zh="他於一九二九年生於中國東南沿海的福州。父親在市內最繁華的南街上經營最大的酒樓「南雄」，店面之後的廳堂延伸八家鋪面之深。幼時他常坐在帳房裡，替人點算銀錢。">He was born in 1929 in Fuzhou, on the southeastern coast of China. His father owned the largest restaurant on the city's main shopping street — Nan Xiong on Nan Jie — a place that stretched more than eight storefronts deep behind its facade. As a small child, he sat in the accountant's office and counted money.</p>
+
+              <p data-en="He was raised primarily by his grandmother, a woman who had gone blind at forty yet still kept a vegetable garden. The family drew strength from her mother's side — a large Fuzhou household that quietly supported them through lean seasons."
+                 data-zh="他主要由祖母帶大。她四十歲後便失明，卻仍親手打理一片菜園。母系一脈是福州的大家族，在最艱難的日子裡悄悄接濟他們。">He was raised primarily by his grandmother, a woman who had gone blind at forty yet still kept a vegetable garden. The family drew strength from her mother's side — a large Fuzhou household that quietly supported them through lean seasons.</p>
+            </div>
+
+            <figure class="ach-photo">
+              <div class="frame wide" data-label="Fuzhou · family &#10;restaurant or riverside · &#10;placeholder for archival photo"></div>
+              <figcaption>
+                <strong data-en="Fuzhou, late 1930s." data-zh="福州　一九三〇年代末。">Fuzhou, late 1930s.</strong>
+                <span data-en=" A photograph from the family restaurant, if one survives — or a period view of the Min River to stand in." data-zh=" 家族酒樓若有存照，或以同期的閩江舊影替代。">A photograph from the family restaurant, if one survives — or a period view of the Min River to stand in.</span>
+              </figcaption>
+            </figure>
+          </article>
+
+          <!-- ============ Ch 02 · Nanping ============ -->
+          <article class="ach" data-chapter="1" data-region="china" data-city="Nanping" data-coords="118.1742,26.6418" data-screen-label="Ch 02 · Nanping">
+            <header class="ach-head">
+              <div class="ach-num">II.</div>
+              <div class="ach-year" data-en="1937 · Nanping" data-zh="一九三七年 · 南平">1937 · Nanping</div>
+              <h3 class="ach-title"><span data-en="Four hundred kilometres inland" data-zh="遷徙四百公里">Four hundred kilometres inland</span> <span class="han">内迁</span></h3>
+            </header>
+
+            <blockquote class="ach-quote">
+              <span data-en="&ldquo;Then the second war broke out. The school moved 400 km away from Fuzhou, in Nanping city. There were Japanese bombings. Four classes dropped to one — seventy-five percent were gone.&rdquo;" data-zh="「第二次戰爭爆發，學校遷到離福州四百公里外的南平。那裡仍有日軍轟炸。四個班只剩下一個 ── 七成五的同學都不見了。」">&ldquo;Then the second war broke out. The school moved 400 km away from Fuzhou, in Nanping city. There were Japanese bombings. Four classes dropped to one — seventy-five percent were gone.&rdquo;</span>
+              <cite data-en="From the 2018 oral history" data-zh="二〇一八年口述歷史">From the 2018 oral history</cite>
+            </blockquote>
+
+            <div class="ach-body">
+              <p data-en="When Japan invaded in 1937, the family was displaced. Schools moved inland, and his followed — four hundred kilometres from the coast, into the mountain city of Nanping. The bombings found them there too. Attendance thinned until four classrooms held what had once taken one."
+                 data-zh="一九三七年日軍入侵，家族流離。學校向內陸遷移，他隨校而行，深入山間的南平城，離海岸足足四百公里。戰火仍追來。學生日漸減少，昔日一班的人數如今勉強填滿四間教室。">When Japan invaded in 1937, the family was displaced. Schools moved inland, and his followed — four hundred kilometres from the coast, into the mountain city of Nanping. The bombings found them there too. Attendance thinned until four classrooms held what had once taken one.</p>
+
+              <p data-en="He finished high school in industrial studies — a pragmatic choice in a collapsing country. The restaurant in Fuzhou had lost its profitability during the occupation. The world he had grown up in was quietly ending."
+                 data-zh="他在工業學校修畢中學課程 ── 在國勢崩塌之際，這是務實的選擇。福州的酒樓在淪陷期間已難以為繼。他熟悉的那個世界，正悄然終結。">He finished high school in industrial studies — a pragmatic choice in a collapsing country. The restaurant in Fuzhou had lost its profitability during the occupation. The world he had grown up in was quietly ending.</p>
+            </div>
+
+            <figure class="ach-photo">
+              <div class="frame wide" data-label="School class photo · &#10;Nanping hills · placeholder"></div>
+              <figcaption>
+                <strong data-en="Industrial school, Nanping, circa 1945." data-zh="南平工業學校　一九四五年前後。">Industrial school, Nanping, circa 1945.</strong>
+                <span data-en=" Classmate, teacher, or a view of the school grounds." data-zh=" 同學、師長，或校園的舊影皆可。">Classmate, teacher, or a view of the school grounds.</span>
+              </figcaption>
+            </figure>
+          </article>
+
+          <!-- ============ Ch 03 · Taipei ============ -->
+          <article class="ach" data-chapter="2" data-region="china" data-display-region="taiwan" data-city="Taipei" data-coords="121.5654,25.0330" data-screen-label="Ch 03 · Taipei">
+            <header class="ach-head">
+              <div class="ach-num">III.</div>
+              <div class="ach-year" data-en="1948 · Taipei" data-zh="一九四八年 · 臺北">1948 · Taipei</div>
+              <h3 class="ach-title"><span data-en="A load of textiles, and a love" data-zh="一擔布疋　一段情">A load of textiles, and a love</span> <span class="han">布与爱</span></h3>
+            </header>
+
+            <blockquote class="ach-quote">
+              <span data-en="&ldquo;He asked my brother and myself to take the load of product and move to Taiwan to sell. So I was there — and I met my love.&rdquo;" data-zh="「父親要哥哥和我帶著一批貨物到臺灣去販售。於是我到了臺灣 ── 也在那裡遇見了我的愛人。」">&ldquo;He asked my brother and myself to take the load of product and move to Taiwan to sell. So I was there — and I met my love.&rdquo;</span>
+              <cite data-en="Shinn-Der, Christmas 2017" data-zh="信德　二〇一七年聖誕">Shinn-Der, Christmas 2017</cite>
+            </blockquote>
+
+            <div class="ach-body">
+              <p data-en="In 1948, his father asked him and his brother to carry a shipment of textile bolts across the Taiwan Strait and sell them. They went. While they were on the island, the Communists took the Mainland. He did not return."
+                 data-zh="一九四八年，父親差遣他與兄長帶著一批布疋橫渡臺灣海峽販售。他們啟程了。正當兄弟在島上奔波時，大陸易幟。他此後再未回返。">In 1948, his father asked him and his brother to carry a shipment of textile bolts across the Taiwan Strait and sell them. They went. While they were on the island, the Communists took the Mainland. He did not return.</p>
+
+              <p data-en="He took work as a technician at a wine-bottle factory in Taipei — chemistry training put to use — and lived frugally. One day he wandered into the Bureau of Liquor and Tobacco next door, where a young comptroller was at her books. Her name was Rae. He was twenty-three."
+                 data-zh="他在臺北一家酒瓶工廠當技術員 ── 總算用上了學過的化學 ── 日子清苦。某日他走進隔壁的公賣局，一位年輕的女會計正在對帳。她叫麗萊。那年他二十三歲。">He took work as a technician at a wine-bottle factory in Taipei — chemistry training put to use — and lived frugally. One day he wandered into the Bureau of Liquor and Tobacco next door, where a young comptroller was at her books. Her name was Rae. He was twenty-three.</p>
+
+              <p data-en="He was admitted to National Taiwan University — thirty thousand applicants for one thousand seats — and studied Chemical Engineering. A job at a glass-bottle factory paid his way. In his second year, he and Rae married."
+                 data-zh="他考入國立臺灣大學 ── 三萬報考、僅取一千 ── 攻讀化學工程。一份玻璃廠的工作支撐他唸完整個學業。大學二年級，他與麗萊成婚。">He was admitted to National Taiwan University — thirty thousand applicants for one thousand seats — and studied Chemical Engineering. A job at a glass-bottle factory paid his way. In his second year, he and Rae married.</p>
+            </div>
+
+            <div class="ach-photo-pair">
+              <figure class="ach-photo ach-photo-tall">
+                <div class="frame tall" data-label="Tai Da graduation · &#10;1956 · 3rd-year student · &#10;placeholder"></div>
+                <figcaption>
+                  <strong data-en="NTU, 1956." data-zh="臺大　一九五六。">NTU, 1956.</strong>
+                  <span data-en=" Chemical Engineering, third year." data-zh=" 化工系三年級。">Chemical Engineering, third year.</span>
+                </figcaption>
+              </figure>
+              <figure class="ach-photo">
+                <div class="frame square" data-label="Wedding · 1956 · &#10;Rae &amp; Shinn-Der · placeholder"></div>
+                <figcaption>
+                  <strong data-en="Taipei, 1956." data-zh="臺北　一九五六。">Taipei, 1956.</strong>
+                  <span data-en=" The wedding of Rae &amp; Shinn-Der." data-zh=" 麗萊與信德的婚禮。">The wedding of Rae &amp; Shinn-Der.</span>
+                </figcaption>
+              </figure>
+            </div>
+          </article>
+
+          <!-- ============ Ch 04 · Kaohsiung ============ -->
+          <article class="ach" data-chapter="3" data-region="china" data-display-region="taiwan" data-city="Kaohsiung" data-coords="120.3014,22.6273" data-screen-label="Ch 04 · Kaohsiung">
+            <header class="ach-head">
+              <div class="ach-num">IV.</div>
+              <div class="ach-year" data-en="1959 · Kaohsiung" data-zh="一九五九年 · 高雄">1959 · Kaohsiung</div>
+              <h3 class="ach-title"><span data-en="Climbing the towers" data-zh="攀上高塔">Climbing the towers</span> <span class="han">炼油厂</span></h3>
+            </header>
+
+            <blockquote class="ach-quote">
+              <span data-en="&ldquo;At the refinery I climbed the towers. That is how you learn a process — from the inside out.&rdquo;" data-zh="「在煉油廠，我親自爬上蒸餾塔。要真正懂一個工藝，只能從裡面往外看。」">&ldquo;At the refinery I climbed the towers. That is how you learn a process — from the inside out.&rdquo;</span>
+            </blockquote>
+
+            <div class="ach-body">
+              <p data-en="After an eighteen-month posting as a military reserve officer near Kaohsiung, and the birth of his first son, Nathan, in Taipei, he joined the Kaohsiung Petroleum Refinery as a process engineer. It was prestigious work, and it was hands-on. He climbed the distillation towers. He learned, tray by tray, how crude oil yields its fractions. The knowledge would matter later, in another country, in a colder sea."
+                 data-zh="他先在高雄附近完成十八個月的預備軍官役，長子康偉在臺北出生。其後進入高雄煉油廠擔任製程工程師。那是體面的工作，也是親力親為的工作。他親自攀上蒸餾塔，一盤一盤地認識原油如何分餾。多年以後，這些知識將在另一個國家、另一片更寒冷的海濱派上用場。">After an eighteen-month posting as a military reserve officer near Kaohsiung, and the birth of his first son, Nathan, in Taipei, he joined the Kaohsiung Petroleum Refinery as a process engineer. It was prestigious work, and it was hands-on. He climbed the distillation towers. He learned, tray by tray, how crude oil yields its fractions. The knowledge would matter later, in another country, in a colder sea.</p>
+            </div>
+
+            <figure class="ach-photo">
+              <div class="frame wide" data-label="Kaohsiung refinery · &#10;distillation towers · &#10;placeholder"></div>
+              <figcaption>
+                <strong data-en="Kaohsiung Refinery, around 1960." data-zh="高雄煉油廠　一九六〇年前後。">Kaohsiung Refinery, around 1960.</strong>
+                <span data-en=" Engineer on platform, distillation towers in background." data-zh=" 工程師於平臺上　背景為蒸餾塔。">Engineer on platform, distillation towers in background.</span>
+              </figcaption>
+            </figure>
+          </article>
+
+          <!-- ============ Ch 05 · Ottawa ============ -->
+          <article class="ach" data-chapter="4" data-region="canada" data-city="Ottawa" data-coords="-75.6972,45.4215" data-screen-label="Ch 05 · Ottawa">
+            <header class="ach-head">
+              <div class="ach-num">V.</div>
+              <div class="ach-year" data-en="1963 · Ottawa" data-zh="一九六三年 · 渥太華">1963 · Ottawa</div>
+              <h3 class="ach-title"><span data-en="$145 a month" data-zh="每月一百四十五元">$145 a month</span> <span class="han">留学</span></h3>
+            </header>
+
+            <blockquote class="ach-quote">
+              <span data-en="&ldquo;$145 a month. Tuition was about $90, so I had $60. I had $30 to pay for the rent, and I needed $20 for food. I sent about $30 home to support these three.&rdquo;" data-zh="「每月一百四十五元。學費約九十元，剩六十元。房租三十元，伙食二十元。還要寄約三十元回家，養這三口人。」">&ldquo;$145 a month. Tuition was about $90, so I had $60. I had $30 to pay for the rent, and I needed $20 for food. I sent about $30 home to support these three.&rdquo;</span>
+              <cite data-en="On the PhD stipend, 1963–67" data-zh="一九六三至一九六七年　博士津貼">On the PhD stipend, 1963–67</cite>
+            </blockquote>
+
+            <div class="ach-body">
+              <p data-en="In 1963, through a connection of Mrs. Wong's — a Dr. Liu — he was offered a PhD scholarship at the University of Ottawa. He went ahead alone. Rae stayed in Taiwan with Nathan and, by then, with Margaret. The arithmetic of his stipend was exact and pitiless: $145 a month, and a list of mouths to feed on two continents."
+                 data-zh="一九六三年，透過王太太介紹的劉博士，他獲得渥太華大學的博士獎學金。他獨自先行。麗萊留在臺灣，身旁有康偉，以及那時已出生的瑪格麗特。他那份津貼的算盤精確而嚴酷：一個月一百四十五元，要同時養活兩個大陸上的親人。">In 1963, through a connection of Mrs. Wong's — a Dr. Liu — he was offered a PhD scholarship at the University of Ottawa. He went ahead alone. Rae stayed in Taiwan with Nathan and, by then, with Margaret. The arithmetic of his stipend was exact and pitiless: $145 a month, and a list of mouths to feed on two continents.</p>
+
+              <p data-en="For four years the couple wrote letters across the ocean. The family still has them. He finished his PhD in 1968. That year his work began to pile up — thermodynamic-consistency tests, vapour–liquid equilibria, partial molal volumes, the virial coefficients of normal fluids. Fortran was new, and so were the possibilities it opened."
+                 data-zh="四年間，他與麗萊隔著大洋魚雁往返。那些信至今仍由家族保存。一九六八年他完成博士學位。這一年他的論文也接連發表 ── 熱力學一致性檢驗、氣液平衡、部分莫耳體積、常態流體的維里係數。Fortran 初興，新的可能正在展開。">For four years the couple wrote letters across the ocean. The family still has them. He finished his PhD in 1968.</p>
+
+              <p data-en="In 1967, Rae arrived in Canada. She came in time for his graduation."
+                 data-zh="一九六七年，麗萊終於抵加。她趕上了他的畢業典禮。">In 1967, Rae arrived in Canada. She came in time for his graduation.</p>
+            </div>
+
+            <figure class="ach-photo">
+              <div class="frame wide" data-label="Ottawa winter street · &#10;PhD-era snapshot · &#10;placeholder"></div>
+              <figcaption>
+                <strong data-en="University of Ottawa, circa 1965." data-zh="渥太華大學　一九六五年前後。">University of Ottawa, circa 1965.</strong>
+                <span data-en=" Letters from Taipei, 1963–67, survive." data-zh=" 臺北寄來的家書 1963–67 留存。">Letters from Taipei, 1963–67, survive.</span>
+              </figcaption>
+            </figure>
+          </article>
+
+          <!-- ============ Ch 06 · Port Hawkesbury ============ -->
+          <article class="ach" data-chapter="5" data-region="canada" data-city="Port Hawkesbury" data-coords="-61.3537,45.6184" data-screen-label="Ch 06 · Port Hawkesbury">
+            <header class="ach-head">
+              <div class="ach-num">VI.</div>
+              <div class="ach-year" data-en="1969 · Port Hawkesbury, Cape Breton" data-zh="一九六九年 · 皓士柏里 · 布雷頓角">1969 · Port Hawkesbury, Cape Breton</div>
+              <h3 class="ach-title"><span data-en="Two inches, not four-and-a-quarter" data-zh="兩英吋　而非四又四分之一">Two inches, not four-and-a-quarter</span> <span class="han">重水塔</span></h3>
+            </header>
+
+            <blockquote class="ach-quote">
+              <span data-en="&ldquo;I had so much practice on the computer, I figured out I could convert the process into a program. Finally they said they should try. When they did, they could produce 320 tons of deuterium.&rdquo;" data-zh="「因為在計算機上練得夠多，我發覺可以把整個製程寫成程式。最後他們同意一試。一試之後，廠裡便能產出三百二十噸重水。」">&ldquo;I had so much practice on the computer, I figured out I could convert the process into a program. Finally they said they should try. When they did, they could produce 320 tons of deuterium.&rdquo;</span>
+            </blockquote>
+
+            <div class="ach-body">
+              <p data-en="Stan Davies had read his distillation papers. In 1969 he was hired as a process engineer at the General Electric heavy-water plant in Port Hawkesbury, Nova Scotia — starting salary $14,500, fifty percent above peer PhDs. In 1972 the family moved to Cape Breton."
+                 data-zh="Stan Davies 讀過他關於蒸餾的論文。一九六九年，他受聘於新斯科舍省皓士柏里的奇異重水廠，擔任製程工程師 ── 起薪一萬四千五百元，比同期博士高出五成。一九七二年，全家搬到布雷頓角島。">Stan Davies had read his distillation papers. In 1969 he was hired at the GE heavy-water plant — starting salary $14,500. In 1972 the family moved to Cape Breton.</p>
+
+              <p data-en="The plant would not reach capacity. Its enormous distillation tower flooded in operation, producing under half of its design output. For two years he modelled the tower, tray by tray, in Fortran — the same way he had climbed the refinery in Kaohsiung. The computer told him the trays were too far apart. Two inches was the correct plate height. The plant had been built with four-and-a-quarter."
+                 data-zh="廠裡遲遲達不到設計產能。龐大的蒸餾塔一運作便發生水淹，產量不到設計值的一半。兩年間，他以 Fortran 一盤一盤地為整座塔建模 ── 如當年在高雄親自攀塔那般細緻。電腦告訴他：塔盤間距過寬。兩英吋才是正確的高度。這座廠竟建成了四又四分之一。">The plant would not reach capacity. For two years he modelled the tower, tray by tray, in Fortran. The computer told him the trays were too far apart — two inches was the correct plate height. The plant had been built with four-and-a-quarter.</p>
+
+              <p data-en="Shutting the plant down to rebuild it cost roughly a million dollars a day. They did it on his analysis. When the plant came back up, production jumped from under half of capacity to more than ninety percent. Output reached three hundred and twenty tons of deuterium a year."
+                 data-zh="停廠改建每日耗資約一百萬元。他們依他的分析行事。廠再開爐時，產能自不及半跳升到九成以上。年產量達到三百二十噸重水。">They rebuilt on his analysis. Production jumped to 90%+. Output reached 320 tons of deuterium a year.</p>
+            </div>
+
+            <div class="ach-stats">
+              <div class="ach-stat">
+                <div class="label" data-en="Tray plate height" data-zh="塔盤間距">Tray plate height</div>
+                <div class="value">4¼″ <span class="arrow">→</span> 2″</div>
+              </div>
+              <div class="ach-stat">
+                <div class="label" data-en="Production" data-zh="產能">Production</div>
+                <div class="value">&lt;50% <span class="arrow">→</span> 90%+</div>
+              </div>
+              <div class="ach-stat">
+                <div class="label" data-en="Annual output" data-zh="年產量">Annual output</div>
+                <div class="value">320 t<span style="font-size:0.5em;color:var(--muted);margin-left:0.15em;" data-en="D₂O" data-zh="重水">D₂O</span></div>
+              </div>
+            </div>
+
+            <figure class="ach-photo">
+              <div class="frame wide" data-label="Heavy water plant · &#10;Port Hawkesbury · 1971–73"></div>
+              <figcaption>
+                <strong data-en="GE Heavy Water Plant, 1971–73." data-zh="奇異重水廠　一九七一至一九七三年。">GE Heavy Water Plant, 1971–73.</strong>
+                <span data-en=" Identified by Nathan." data-zh=" 由康偉辨認。">Identified by Nathan.</span>
+              </figcaption>
+            </figure>
+          </article>
+
+          <!-- ============ Ch 07 · Toronto & cottage ============ -->
+          <article class="ach" data-chapter="6" data-region="canada" data-city="Toronto" data-coords="-79.3832,43.6532" data-screen-label="Ch 07 · Later Years">
+            <header class="ach-head">
+              <div class="ach-num">VII.</div>
+              <div class="ach-year" data-en="1995 — 2023 · Toronto &amp; the Cottage" data-zh="一九九五至二〇二三 · 多倫多與木屋">1995 — 2023 · Toronto &amp; the Cottage</div>
+              <h3 class="ach-title"><span data-en="Twenty winters in the garden" data-zh="園中二十寒暑">Twenty winters in the garden</span> <span class="han">晚年</span></h3>
+            </header>
+
+            <blockquote class="ach-quote">
+              <span data-en="&ldquo;Having gone through twenty winters and summers, / flowers planted and vegetables grown — diligence fills the garden.&rdquo;" data-zh="「歷經冬夏二十年，　種花種菜勤滿園。」">&ldquo;Having gone through twenty winters and summers, / flowers planted and vegetables grown — diligence fills the garden.&rdquo;</span>
+              <cite data-en="Guoqing Li, &ldquo;Chang's Cottage,&rdquo; 2025" data-zh="李國慶　《張家木屋》　二〇二五年">Guoqing Li, &ldquo;Chang's Cottage,&rdquo; 2025</cite>
+            </blockquote>
+
+            <figure class="ach-bridge">
+              <svg viewBox="0 0 800 380" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                <use href="#cottage-bridge" />
+              </svg>
+              <figcaption>
+                <strong data-en="The bridge near the cottage." data-zh="木屋邊的橋。">The bridge near the cottage.</strong>
+                <span data-en=" Through-truss, slate and steel — crossed for twenty-eight summers." data-zh=" 鋼桁桁架，板岩與鐵骨 ── 二十八個夏天，他從這座橋上往返。">Through-truss, slate and steel — crossed for twenty-eight summers.</span>
+              </figcaption>
+            </figure>
+
+            <div class="ach-body">
+              <p data-en="After the heavy-water years, there were the quieter ones. The family moved to Toronto. A cottage in Ontario became the family's hearth. He gardened; he canoed; he slept through long afternoons in the cottage's common room. The grandchildren — Michael, Daniel, Jonathan — came and went, broke things, were patiently repaired for."
+                 data-zh="重水廠的歲月過後，便是靜水流深的年頭。全家遷至多倫多。安大略省的一棟木屋成為家族的爐火。他耕種、划船，在木屋的客廳午睡度過一整個下午。外孫輩 ── 麥可、丹尼爾、約拿單 ── 來來去去，弄壞了不少東西，每一次都由他默默修好。">After the heavy-water years came the quieter ones. The family moved to Toronto. A cottage in Ontario became the family's hearth. He gardened; he canoed; he slept through long afternoons. The grandchildren came and went, broke things, were patiently repaired for.</p>
+
+              <p data-en="In April 2023 a diagnosis came: primary liver cancer, weeks rather than months. There was no pain. At home, with Rae and his children near, he spoke of what he saw when he looked back. &ldquo;Life goes fast,&rdquo; he told his daughter Margaret, &ldquo;but I have been blessed.&rdquo;"
+                 data-zh="二〇二三年四月，診斷下來：原發性肝癌，來日僅以週計，不以月計。整個過程並無疼痛。他在家中，麗萊與子女守在身邊。回望此生，他說：「人生過得真快，」他告訴女兒瑪格麗特，「但我已蒙受太多恩典。」">In April 2023 a diagnosis came: primary liver cancer, weeks not months. There was no pain. &ldquo;Life goes fast,&rdquo; he told his daughter Margaret, &ldquo;but I have been blessed.&rdquo;</p>
+
+              <p data-en="He died in June 2023, in Maplehurst, surrounded by family. He was ninety-three."
+                 data-zh="他於二〇二三年六月在楓樹居辭世，家人圍繞身旁。享年九十三歲。">He died in June 2023, surrounded by family. He was ninety-three.</p>
+            </div>
+          </article>
+
+        </div><!-- /.atlas-chapters -->
+
+      </aside><!-- /.atlas-panel -->
+      </div><!-- /.atlas-body -->
+    </div><!-- /.atlas-frame -->
+  </section>
+
+
+  <!-- ============ TAB: TRIBUTES ============ -->
+  <section class="tab-view" data-tab="tributes" data-screen-label="Tributes">
+  <section class="memoriam" id="tributes-section">
+    <div class="section-head fade-in">
+      <div class="eyebrow" data-en="In Memoriam" data-zh="追 思">In Memoriam</div>
+      <h2><span data-en="A quiet man" data-zh="一位沉靜的人">A quiet man</span></h2>
+      <div class="han" data-en="From the eulogy delivered by his three grandsons, 15 July 2023" data-zh="追思禮辭　由三位外孫於二〇二三年七月十五日所讀">From the eulogy delivered by his three grandsons, 15 July 2023</div>
+    </div>
+
+    <div class="memoriam-toc fade-in">
+      <a class="entry" href="#tribute-jj">
+        <span class="who" data-en="Jonathan " data-zh="約拿單 ">Jonathan </span>
+        <span class="deck" data-en="Quiet Support &nbsp;· &nbsp;On the $145 stipend and the mouths it fed." data-zh="沉靜的支撐 &nbsp;· &nbsp;一百四十五元的津貼，撐起了兩地三口。">Quiet Support &nbsp;· &nbsp;On the $145 stipend and the mouths it fed.</span>
+      </a>
+      <a class="entry" href="#tribute-michael">
+        <span class="who" data-en="Michael " data-zh="麥可 ">Michael </span>
+        <span class="deck" data-en="Quiet Courage &nbsp;· &nbsp;Leaving Fuzhou, and leaving Taiwan." data-zh="沉靜的勇氣 &nbsp;· &nbsp;離開福州，再離開臺灣。">Quiet Courage &nbsp;· &nbsp;Leaving Fuzhou, and leaving Taiwan.</span>
+      </a>
+      <a class="entry" href="#tribute-daniel">
+        <span class="who" data-en="Daniel " data-zh="丹尼爾 ">Daniel </span>
+        <span class="deck" data-en="Quiet Patience &nbsp;· &nbsp;The plaster walls the grandchildren kept breaking." data-zh="沉靜的耐性 &nbsp;· &nbsp;孫輩反覆撞破的牆面，他一次次修補。">Quiet Patience &nbsp;· &nbsp;The plaster walls the grandchildren kept breaking.</span>
+      </a>
+      <a class="entry" href="#tribute-margaret">
+        <span class="who" data-en="Margaret " data-zh="瑪格麗特 ">Margaret </span>
+        <span class="deck" data-en="Her father &nbsp;· &nbsp;&ldquo;No pain. We consider this a grace.&rdquo;" data-zh="父親 &nbsp;· &nbsp;「沒有疼痛。我們視此為恩典。」">Her father &nbsp;· &nbsp;&ldquo;No pain. We consider this a grace.&rdquo;</span>
+      </a>
+      <a class="entry" href="#tribute-guoqing">
+        <span class="who" data-en="Guoqing Li " data-zh="李國慶 ">Guoqing Li </span>
+        <span class="deck" data-en="Chang's Cottage &nbsp;· &nbsp;An eight-line Chinese poem for the Ontario cottage." data-zh="《張家木屋》 &nbsp;· &nbsp;八行中文詩，獻給安大略那棟木屋。">Chang's Cottage &nbsp;· &nbsp;An eight-line Chinese poem for the Ontario cottage.</span>
+      </a>
+    </div>
+
+    <!-- JJ -->
+    <article class="letter fade-in" id="tribute-jj">
+      <header class="letter-head">
+        <div class="letter-avatar" aria-hidden="true"></div>
+        <div class="letter-who">
+          <div class="name" data-en="Jonathan Yue" data-zh="約拿單・岳">Jonathan Yue</div>
+          <div class="relation" data-en="Grandson · Quiet Support" data-zh="外孫 · 沉靜的支撐">Grandson · Quiet Support</div>
+        </div>
+      </header>
+      <div class="letter-body">
+        <p class="deck" data-en="On the stipend, and the mouths it fed across two continents." data-zh="關於那份津貼，以及它跨越兩塊大陸所撐起的一家人。">On the stipend, and the mouths it fed across two continents.</p>
+        <p data-en="A poignant illustration of this was in 1963, when he moved to Canada and lived on his PhD stipend while attending the University of Ottawa. Of the one hundred and forty-five dollars he earned each month, the majority went back to China and Taiwan — to Grandma Chang and the kids, to Grandma's mother, to Grandpa's parents."
+           data-zh="最動人的一個例子是一九六三年，他移居加拿大，在渥太華大學就讀期間，僅靠博士津貼生活。每月一百四十五元，他把絕大部分寄回中國與臺灣 ── 給外婆與孩子們、給外婆的母親、給他自己的父母。">A poignant illustration of this was in 1963, when he moved to Canada and lived on his PhD stipend while attending the University of Ottawa. Of the one hundred and forty-five dollars he earned each month, the majority went back to China and Taiwan — to Grandma Chang and the kids, to Grandma's mother, to Grandpa's parents.</p>
+        <p data-en="That was Grandpa. The quiet arithmetic of how much he needed, and how much he could give away."
+           data-zh="那就是外公。安安靜靜地算一筆賬 ── 自己需要多少、可以讓出多少。">That was Grandpa. The quiet arithmetic of how much he needed, and how much he could give away.</p>
+      </div>
+      <div class="letter-sign" data-en="Jonathan, July 2023" data-zh="約拿單　二〇二三年七月">Jonathan, July 2023</div>
+    </article>
+
+    <!-- Michael -->
+    <article class="letter fade-in" id="tribute-michael">
+      <header class="letter-head">
+        <div class="letter-avatar" aria-hidden="true"></div>
+        <div class="letter-who">
+          <div class="name" data-en="Michael Yue" data-zh="麥可・岳">Michael Yue</div>
+          <div class="relation" data-en="Grandson · Quiet Courage" data-zh="外孫 · 沉靜的勇氣">Grandson · Quiet Courage</div>
+        </div>
+      </header>
+      <div class="letter-body">
+        <p class="deck" data-en="Three leavings, each one of them a quiet act of courage." data-zh="三次出走　每一次都是沉靜的勇氣。">Three leavings, each one of them a quiet act of courage.</p>
+        <p data-en="As a young man, he moved to — and stayed in — Taiwan. As a young adult, he emigrated to Canada and raised his family there. As an older adult, he showed courage investing in high-leverage real estate, backed up by his own sweat equity. Yet somehow I had known little to nothing about any of these until the 2010s."
+           data-zh="年輕時，他遷至臺灣並長居下來。成家後，他舉家移居加拿大，在異鄉把孩子拉拔大。再長些，他又以膽識投入需要高槓桿的房地產 ── 每一分本金，都混著他親手流下的汗。然而這一切，我直到二〇一〇年代才模糊知悉。">As a young man, he moved to — and stayed in — Taiwan. As a young adult, he emigrated to Canada and raised his family there. As an older adult, he showed courage investing in high-leverage real estate, backed up by his own sweat equity. Yet somehow I had known little to nothing about any of these until the 2010s.</p>
+        <p data-en="Grandpa's courage never announced itself. It simply did the thing, and waited for the rest of us to notice — if we ever did."
+           data-zh="外公的勇氣從不喧嚷。他只是把事情做了，然後等待我們什麼時候才恰巧發現 ── 如果我們發現得了的話。">Grandpa's courage never announced itself. It simply did the thing, and waited for the rest of us to notice — if we ever did.</p>
+      </div>
+      <div class="letter-sign" data-en="Michael, July 2023" data-zh="麥可　二〇二三年七月">Michael, July 2023</div>
+    </article>
+
+    <!-- Daniel -->
+    <article class="letter fade-in" id="tribute-daniel">
+      <header class="letter-head">
+        <div class="letter-avatar" aria-hidden="true"></div>
+        <div class="letter-who">
+          <div class="name" data-en="Daniel Yue" data-zh="丹尼爾・岳">Daniel Yue</div>
+          <div class="relation" data-en="Grandson · Quiet Patience" data-zh="外孫 · 沉靜的耐性">Grandson · Quiet Patience</div>
+        </div>
+      </header>
+      <div class="letter-body">
+        <p class="deck" data-en="On the walls we broke, and the man who always came to fix them." data-zh="我們撞破的牆　與那位總會來修補的人。">On the walls we broke, and the man who always came to fix them.</p>
+        <p data-en="We used to roughhouse around our Maryland home, and on occasion would break the plaster walls when Michael would — too enthusiastically — push one of us through them. Fortunately for us, this seemed to happen shortly before visits from Grandpa, who would always come, patiently take out his plaster and putty, and fix the walls — if only for them to be broken again before the next visit."
+           data-zh="小時候，我們在馬里蘭家中胡鬧，時常弄壞牆面 ── 通常是麥可把我們其中一人興高采烈地推進牆裡所致。幸運的是，外公來訪的日子總在這之後不久。他每次都會帶上灰泥和膩子，耐心地補好每一處 ── 只為了在下回到訪之前，再度被我們撞破。">We used to roughhouse around our Maryland home, and on occasion would break the plaster walls when Michael would — too enthusiastically — push one of us through them. Fortunately for us, this seemed to happen shortly before visits from Grandpa, who would always come, patiently take out his plaster and putty, and fix the walls — if only for them to be broken again before the next visit.</p>
+        <p data-en="I think now that the walls were a small lesson in a much larger patience. The broken walls of a life — mine, ours — have always been quietly fixed by someone. For a long stretch, that someone was him."
+           data-zh="如今想來，那些牆不過是更大耐性的一個小小練習題。生命裡被撞破的牆 ── 我的、我們的 ── 向來都是被某個人默默補回。那個人，有很長一段時日，便是他。">I think now that the walls were a small lesson in a much larger patience. The broken walls of a life — mine, ours — have always been quietly fixed by someone. For a long stretch, that someone was him.</p>
+      </div>
+      <div class="letter-sign" data-en="Daniel, July 2023" data-zh="丹尼爾　二〇二三年七月">Daniel, July 2023</div>
+    </article>
+
+    <!-- Margaret -->
+    <article class="letter fade-in" id="tribute-margaret">
+      <header class="letter-head">
+        <div class="letter-avatar" aria-hidden="true"></div>
+        <div class="letter-who">
+          <div class="name" data-en="Margaret Chang" data-zh="瑪格麗特・張">Margaret Chang</div>
+          <div class="relation" data-en="Daughter" data-zh="女兒">Daughter</div>
+        </div>
+      </header>
+      <div class="letter-body">
+        <p class="deck" data-en="Written in April 2023, after the diagnosis — an update the family still re-reads." data-zh="寫於二〇二三年四月　病情確診之後 ── 這封家書至今仍被反覆重讀。">Written in April 2023, after the diagnosis — an update the family still re-reads.</p>
+        <p data-en="Dad understands, and has said more than once: &ldquo;Life goes fast… but I have been blessed.&rdquo; He has no pain, despite how far the cancer has travelled. We consider this a grace. He is home, with Mom, and the palliative team are in place."
+           data-zh="父親完全明白自己的狀況，並不只一次地說：「人生過得真快……但我已蒙受太多恩典。」儘管癌症已擴散得很遠，他全無疼痛。這在我們看來，是一份恩典。他正在家中，與母親同在，安寧團隊也已就位。">Dad understands, and has said more than once: &ldquo;Life goes fast… but I have been blessed.&rdquo; He has no pain, despite how far the cancer has travelled. We consider this a grace. He is home, with Mom, and the palliative team are in place.</p>
+        <p data-en="Mom has been more resilient than I thought. She told me: &ldquo;He has been the best husband and father. We need to do right by him.&rdquo;"
+           data-zh="母親比我原先以為的更堅強。她對我說：「他是最好的丈夫，最好的父親。我們得好好地為他送行。」">Mom has been more resilient than I thought. She told me: &ldquo;He has been the best husband and father. We need to do right by him.&rdquo;</p>
+      </div>
+      <div class="letter-sign" data-en="Margaret, 15 April 2023" data-zh="瑪格麗特　二〇二三年四月十五日">Margaret, 15 April 2023</div>
+    </article>
+
+    <!-- Guoqing Li -->
+    <article class="letter fade-in" id="tribute-guoqing">
+      <header class="letter-head">
+        <div class="letter-avatar" aria-hidden="true"></div>
+        <div class="letter-who">
+          <div class="name" data-en="Guoqing Li · 李國慶" data-zh="李 國 慶">Guoqing Li · 李國慶</div>
+          <div class="relation" data-en="Chang's Cottage · a poem · Ontario, August 2025" data-zh="《張家木屋》　詩　二〇二五年八月於安大略">Chang's Cottage · a poem · Ontario, August 2025</div>
+        </div>
+      </header>
+      <div class="letter-body">
+        <div class="han" style="font-size:1.25rem; line-height:2.2; color:var(--ink); margin-bottom:1.5rem;">
+          歷經冬夏二十年<br/>
+          種花種菜勤滿園<br/>
+          景美木秀秋時爽<br/>
+          出入往來靠行船<br/>
+          處處記憶引思念<br/>
+          融融親情一家暖<br/>
+          長河流水永不斷<br/>
+          兒孫長大新代延
+        </div>
+        <p style="font-style:italic; color:var(--slate);" data-en="Having gone through twenty winters and summers, / flowers planted and vegetables grown — diligence fills the garden. / The view is beautiful, the trees stand out; autumn is refreshing. / Coming and going depend on boats. / Memories rise in every place and stir the heart, / warm kinship fills the home, a gentle, constant glow. / The long river runs on, its waters never part; / children grown, a new generation set to grow."
+           data-zh="（詩作原文如上，中文版即原文。）">Having gone through twenty winters and summers, / flowers planted and vegetables grown — diligence fills the garden. / The view is beautiful, the trees stand out; autumn is refreshing. / Coming and going depend on boats. / Memories rise in every place and stir the heart, / warm kinship fills the home, a gentle, constant glow. / The long river runs on, its waters never part; / children grown, a new generation set to grow.</p>
+      </div>
+      <div class="letter-sign" data-en="Guoqing Li, August 2025" data-zh="李國慶　二〇二五年八月">Guoqing Li, August 2025</div>
+    </article>
+
+    <div class="tribute-invite fade-in">
+      <p data-en="If you would like to add a tribute, the family is curating them by hand." data-zh="如欲撰寫追思之辭，敬請寄至家族信箱，我們會親自整理收錄。">If you would like to add a tribute, the family is curating them by hand.</p>
+      <a class="cta" href="mailto:memorial@example.com" data-en="Share a memory →" data-zh="寫下一段記憶 →">Share a memory →</a>
+    </div>
+  </section>
+  </section><!-- /.tab-view tributes -->
+
+  <!-- ============ TAB: PHOTOS ============ -->
+  <section class="tab-view" data-tab="photos" data-screen-label="Photos">
+  <!-- ============ GALLERY ============ -->
+  <section class="gallery" id="gallery-section">
+    <div class="section-head fade-in">
+      <div class="eyebrow" data-en="Album" data-zh="相 冊">Album</div>
+      <h2><span data-en="A life in photographs" data-zh="相冊中的一生">A life in photographs</span></h2>
+      <div class="han" data-en="Arranged by chapter · captions to be confirmed with the family" data-zh="按章節排序 · 圖說待家人確認">Arranged by chapter · captions to be confirmed with the family</div>
+    </div>
+
+    <!-- Taiwan years -->
+    <div class="gallery-group fade-in">
+      <svg class="botanical-gallery" viewBox="0 0 100 120" aria-hidden="true"><use href="#single-flower"/></svg>
+      <div class="gallery-group-head">
+        <span class="year">1948 — 1962</span>
+        <span class="title" data-en="Taiwan years" data-zh="臺灣歲月">Taiwan years</span>
+        <span class="count" data-en="8 photographs" data-zh="八 張">8 photographs</span>
+      </div>
+      <div class="masonry">
+        <figure class="tile"><div class="frame" data-ratio="4:5" data-label="Tai Da · 1956 · &#10;3rd-year"></div><div class="cap"><strong data-en="Tai Da, 1956." data-zh="臺大　一九五六。">Tai Da, 1956.</strong> <span data-en="3rd-year student portrait." data-zh="三年級學生照。">3rd-year student portrait.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="3:2" data-label="Wedding · 1956 · &#10;Rae &amp; Shinn-Der"></div><div class="cap"><strong data-en="Taipei, 1956." data-zh="臺北　一九五六。">Taipei, 1956.</strong> <span data-en="Wedding of Rae and Shinn-Der." data-zh="麗萊與信德的婚禮。">Wedding of Rae and Shinn-Der.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="1:1" data-label="Wine-bottle factory · &#10;Taipei · 1952"></div><div class="cap"><strong data-en="Taipei, ~1952." data-zh="臺北　約一九五二。">Taipei, ~1952.</strong> <span data-en="Wine-bottle factory, technician days." data-zh="酒瓶工廠　技術員時期。">Wine-bottle factory, technician days.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="2:3" data-label="Nathan born · &#10;Taipei · 1958"></div><div class="cap"><strong data-en="Taipei, 1958." data-zh="臺北　一九五八。">Taipei, 1958.</strong> <span data-en="The birth of Nathan." data-zh="長子康偉出生。">The birth of Nathan.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="3:2" data-label="Kaohsiung refinery · &#10;towers · 1961"></div><div class="cap"><strong data-en="Kaohsiung, 1961." data-zh="高雄　一九六一。">Kaohsiung, 1961.</strong> <span data-en="On the refinery platform." data-zh="於煉油廠平臺。">On the refinery platform.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="4:5" data-label="Rae · Taipei · &#10;young mother"></div><div class="cap"><strong data-en="Taipei." data-zh="臺北。">Taipei.</strong> <span data-en="Rae as a young mother." data-zh="年輕母親麗萊。">Rae as a young mother.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="1:1" data-label="Military reserve · &#10;Kaohsiung · 1957"></div><div class="cap"><strong data-en="Kaohsiung, 1957." data-zh="高雄　一九五七。">Kaohsiung, 1957.</strong> <span data-en="Military reserve officer service." data-zh="預備軍官役。">Military reserve officer service.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="3:4" data-label="Family portrait · &#10;1961 · Taipei"></div><div class="cap"><strong data-en="Family portrait, 1961." data-zh="家族合照　一九六一。">Family portrait, 1961.</strong> <span data-en="Before the departure for Canada." data-zh="赴加前夕。">Before the departure for Canada.</span></div></figure>
+      </div>
+    </div>
+
+    <!-- Ottawa -->
+    <div class="gallery-group fade-in">
+      <svg class="botanical-gallery donggua-icon-tag" viewBox="0 0 80 50" aria-hidden="true"><use href="#donggua-icon"/></svg>
+      <div class="gallery-group-head">
+        <span class="year">1963 — 1968</span>
+        <span class="title" data-en="Ottawa" data-zh="渥太華">Ottawa</span>
+        <span class="count" data-en="6 photographs" data-zh="六 張">6 photographs</span>
+      </div>
+      <div class="masonry">
+        <figure class="tile"><div class="frame" data-ratio="3:2" data-label="Ottawa winter · &#10;first year"></div><div class="cap"><strong data-en="Ottawa, winter 1963." data-zh="渥太華　一九六三冬。">Ottawa, winter 1963.</strong> <span data-en="First year in Canada." data-zh="旅加第一年。">First year in Canada.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="4:5" data-label="Letter from Taipei · &#10;1965"></div><div class="cap"><strong data-en="Letter from Taipei, 1965." data-zh="來自臺北的家書　一九六五。">Letter from Taipei, 1965.</strong> <span data-en="A page from the Chang Letters." data-zh="《張家書信》一頁。">A page from the Chang Letters.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="1:1" data-label="University of &#10;Ottawa · lab"></div><div class="cap"><strong data-en="University of Ottawa." data-zh="渥太華大學。">University of Ottawa.</strong> <span data-en="Chemical engineering lab." data-zh="化工系實驗室。">Chemical engineering lab.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="3:4" data-label="Graduation · 1968"></div><div class="cap"><strong data-en="Graduation, 1968." data-zh="畢業　一九六八。">Graduation, 1968.</strong> <span data-en="PhD, magna cum laude." data-zh="博士　成績優異。">PhD, magna cum laude.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="3:2" data-label="Rae arrives · &#10;1967"></div><div class="cap"><strong data-en="Rae arrives, 1967." data-zh="麗萊抵加　一九六七。">Rae arrives, 1967.</strong> <span data-en="Just in time for graduation." data-zh="正好趕上畢業典禮。">Just in time for graduation.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="1:1" data-label="Fortran code · &#10;punched cards"></div><div class="cap"><strong data-en="Fortran, mid-1960s." data-zh="Fortran　一九六〇年代中期。">Fortran, mid-1960s.</strong> <span data-en="The computer work that would matter." data-zh="日後舉足輕重的電腦運算工作。">The computer work that would matter.</span></div></figure>
+      </div>
+    </div>
+
+    <!-- Port Hawkesbury -->
+    <div class="gallery-group fade-in">
+      <svg class="botanical-gallery" viewBox="0 0 100 120" aria-hidden="true"><use href="#single-flower"/></svg>
+      <div class="gallery-group-head">
+        <span class="year">1969 — 1994</span>
+        <span class="title" data-en="Port Hawkesbury &amp; the years after" data-zh="皓士柏里與其後歲月">Port Hawkesbury &amp; the years after</span>
+        <span class="count" data-en="7 photographs" data-zh="七 張">7 photographs</span>
+      </div>
+      <div class="masonry">
+        <figure class="tile"><div class="frame" data-ratio="3:2" data-label="Heavy water plant · &#10;Port Hawkesbury · &#10;1971–73"></div><div class="cap"><strong data-en="Port Hawkesbury, 1971–73." data-zh="皓士柏里　一九七一至七三。">Port Hawkesbury, 1971–73.</strong> <span data-en="Heavy-water plant. Identified by Nathan." data-zh="重水廠　由康偉辨認。">Heavy-water plant. Identified by Nathan.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="4:5" data-label="Family · 1974 · &#10;Cape Breton"></div><div class="cap"><strong data-en="Cape Breton, 1974." data-zh="布雷頓角　一九七四。">Cape Breton, 1974.</strong> <span data-en="Nathan, Margaret, and the parents." data-zh="康偉、瑪格麗特與雙親。">Nathan, Margaret, and the parents.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="1:1" data-label="Technical &#10;superintendent · &#10;promotion · 1978"></div><div class="cap"><strong data-en="AEC, 1978." data-zh="加原子能公司　一九七八。">AEC, 1978.</strong> <span data-en="Promotion to Technical Superintendent." data-zh="擢升為技術部主管。">Promotion to Technical Superintendent.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="3:4" data-label="Seawall walk · &#10;Nova Scotia"></div><div class="cap"><strong data-en="Nova Scotia coastline." data-zh="新斯科舍海岸。">Nova Scotia coastline.</strong> <span data-en="Weekend walks by the sea." data-zh="週末的海邊漫步。">Weekend walks by the sea.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="3:2" data-label="Tray plate &#10;diagram · &#10;notebook page"></div><div class="cap"><strong data-en="Notebook page, circa 1972." data-zh="筆記本一頁　約一九七二。">Notebook page, circa 1972.</strong> <span data-en="Tray-plate calculations." data-zh="塔盤計算。">Tray-plate calculations.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="1:1" data-label="Colleagues · &#10;plant floor · 1982"></div><div class="cap"><strong data-en="Plant floor, 1982." data-zh="廠房現場　一九八二。">Plant floor, 1982.</strong> <span data-en="With colleagues." data-zh="與同事合影。">With colleagues.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="4:5" data-label="Retirement · &#10;fishing rod · &#10;Cape Breton"></div><div class="cap"><strong data-en="Late 1980s." data-zh="一九八〇年代末。">Late 1980s.</strong> <span data-en="With a fishing rod, on Cape Breton." data-zh="持釣竿　於布雷頓角。">With a fishing rod, on Cape Breton.</span></div></figure>
+      </div>
+    </div>
+
+    <!-- Cottage / later years -->
+    <div class="gallery-group fade-in">
+      <svg class="botanical-gallery donggua-icon-tag" viewBox="0 0 80 50" aria-hidden="true"><use href="#donggua-icon"/></svg>
+      <div class="gallery-group-head">
+        <span class="year">1995 — 2023</span>
+        <span class="title" data-en="Toronto, the cottage, the grandchildren" data-zh="多倫多 · 木屋 · 孫輩">Toronto, the cottage, the grandchildren</span>
+        <span class="count" data-en="8 photographs" data-zh="八 張">8 photographs</span>
+      </div>
+      <div class="masonry">
+        <figure class="tile"><div class="frame" data-ratio="3:2" data-label="Cottage dock · &#10;Ontario"></div><div class="cap"><strong data-en="Ontario cottage, early 2000s." data-zh="安大略木屋　二〇〇〇年代初。">Ontario cottage, early 2000s.</strong> <span data-en="The dock where canoes began." data-zh="獨木舟自此出發。">The dock where canoes began.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="4:5" data-label="Gardening · &#10;with Rae"></div><div class="cap"><strong data-en="The garden." data-zh="園中。">The garden.</strong> <span data-en="With Rae, the diligence of twenty winters." data-zh="與麗萊　二十寒暑的勤耕。">With Rae, the diligence of twenty winters.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="1:1" data-label="Grandchildren · &#10;Maplehurst"></div><div class="cap"><strong data-en="Maplehurst, Toronto." data-zh="楓樹居　多倫多。">Maplehurst, Toronto.</strong> <span data-en="With the grandchildren." data-zh="與孫輩。">With the grandchildren.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="3:4" data-label="Baltic cruise · &#10;2014"></div><div class="cap"><strong data-en="Scandinavia, 2014." data-zh="北歐　二〇一四。">Scandinavia, 2014.</strong> <span data-en="He had always wanted to see it." data-zh="他一直想親眼看看這片土地。">He had always wanted to see it.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="3:2" data-label="Cottage living room · &#10;afternoon nap"></div><div class="cap"><strong data-en="The common room, cottage." data-zh="木屋客廳。">The common room, cottage.</strong> <span data-en="An afternoon nap." data-zh="午後小憩。">An afternoon nap.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="4:5" data-label="80th birthday · &#10;2009"></div><div class="cap"><strong data-en="80th birthday, 2009." data-zh="八十壽誕　二〇〇九。">80th birthday, 2009.</strong> <span data-en="Family gathered in Toronto." data-zh="家人齊聚多倫多。">Family gathered in Toronto.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="1:1" data-label="Reading letters · &#10;with Rae · 2020"></div><div class="cap"><strong data-en="2020." data-zh="二〇二〇。">2020.</strong> <span data-en="Re-reading the 1960s letters with Rae." data-zh="與麗萊重讀一九六〇年代家書。">Re-reading the 1960s letters with Rae.</span></div></figure>
+        <figure class="tile"><div class="frame" data-ratio="3:4" data-label="Last spring · &#10;Maplehurst · 2023"></div><div class="cap"><strong data-en="Spring, 2023." data-zh="二〇二三年春。">Spring, 2023.</strong> <span data-en="At home, at peace." data-zh="於家中　安然。">At home, at peace.</span></div></figure>
+      </div>
+    </div>
+  </section>
+  </section><!-- /.tab-view photos -->
+
+  </main><!-- /.tabs -->
+
+  <!-- ============ BRIDGE FOOTER (full-bleed ink-wash with overlay) ============ -->
+  <footer class="bridge-footer" data-screen-label="Bridge Footer" tabindex="-1">
+    <div class="bridge-stack" aria-label="Memorial bridge — switch styles with arrow keys">
+      <img class="bridge-bg-img is-active" data-style="ink-wash"   src="images/bridge/02_chinese_ink_wash_high.png" alt="Chinese ink-wash painting of the bridge with calligraphy 張信德 above" />
+      <img class="bridge-bg-img"           data-style="minimalist" src="images/bridge/01_minimalist_layout_high.png" alt="Minimalist line illustration of the bridge with calligraphy 張信德 above" loading="lazy" />
+      <img class="bridge-bg-img"           data-style="photoreal"  src="images/bridge/03_photoreal_dawn_high.png" alt="Photoreal dawn view of the bridge with calligraphy 張信德 above" loading="lazy" />
+      <img class="bridge-bg-img"           data-style="watercolor" src="images/bridge/04_watercolor_stylized_high.png" alt="Stylized watercolor of the bridge with calligraphy 張信德 above" loading="lazy" />
+      <img class="bridge-bg-img"           data-style="blueprint"  src="images/bridge/05_geometric_blueprint_high.png" alt="Geometric blueprint sketch of the bridge with calligraphy 張信德 above" loading="lazy" />
+      <img class="bridge-bg-img"           data-style="silkscreen" src="images/bridge/06_modernist_silkscreen_high.png" alt="Modernist silkscreen of the bridge with calligraphy 張信德 above" loading="lazy" />
+    </div>
+  </footer>
+
+  <script src="maps-data.js?v=2"></script>
+  <script src="main.js?v=34"></script>
+</body>
+</html>
