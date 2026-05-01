@@ -27,25 +27,27 @@
 
     * { box-sizing: border-box; }
 
-    html, body {
-      margin: 0;
-      padding: 0;
+    html, body { margin: 0; padding: 0; }
+    html {
       background: var(--paper);
       color: var(--ink);
       -webkit-text-size-adjust: 100%;
+      scroll-behavior: smooth;
     }
-    html { height: 100%; }
     body {
-      min-height: 100vh;
-      min-height: 100svh;
       font-family: var(--serif-body);
       font-size: 19px;
       line-height: 1.65;
       text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
       font-feature-settings: "kern", "liga", "onum";
-      overflow: hidden;
+      background: var(--paper);
+      color: var(--ink);
+      /* Hide scrollbars while keeping scroll behavior intact */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
+    body::-webkit-scrollbar { display: none; width: 0; height: 0; }
     img { max-width: 100%; display: block; }
 
     /* ============== Sticky top nav (brand + lang only) ============== */
@@ -63,6 +65,11 @@
       backdrop-filter: saturate(140%) blur(10px);
       -webkit-backdrop-filter: saturate(140%) blur(10px);
       border-bottom: 1px solid transparent;
+      transition: border-color 0.3s ease, background 0.3s ease;
+    }
+    .topnav.is-stuck {
+      border-bottom-color: var(--rule);
+      background: rgba(253, 252, 249, 0.96);
     }
     .topnav-brand {
       display: inline-flex;
@@ -114,10 +121,7 @@
       .lang-btn { padding: 0.3rem 0.5rem; font-size: 0.6rem; }
     }
 
-    /* ============== Hero (full viewport, no scroll) ==============
-       Goal: portrait + text always fit inside the viewport with comfortable
-       white space below the photo. We use grid on wide screens (image
-       centered, text floats right) and flex column on narrow screens. */
+    /* ============== Hero (fills viewport below the nav) ============== */
     .hero {
       position: relative;
       height: calc(100vh - var(--nav-h));
@@ -144,14 +148,11 @@
       align-items: center;
       justify-content: center;
       min-height: 0;
-      max-height: 100%;
     }
     .hero-portrait img {
       width: auto;
       height: auto;
       max-width: min(42vw, 560px);
-      /* Cap height so the photo (plus padding) always fits the viewport
-         with white space below. The 4rem buffer reserves visual breathing room. */
       max-height: calc(100vh - var(--nav-h) - 4rem);
       max-height: calc(100svh - var(--nav-h) - 4rem);
       object-fit: contain;
@@ -170,21 +171,25 @@
       min-height: 0;
     }
 
-    /* ===== Narrow layout: single column, both blocks must fit viewport ===== */
+    /* ===== Narrow layout (phones / tablets in portrait) ===== */
     @media (max-width: 880px) {
       .hero {
         grid-template-columns: 1fr;
-        grid-template-rows: 1fr auto;
-        row-gap: clamp(0.75rem, 2vh, 1.25rem);
-        padding: clamp(0.75rem, 2vw, 1.25rem) 1.25rem clamp(1rem, 3vw, 1.5rem);
+        grid-template-rows: auto auto;
+        align-items: start;
+        justify-items: center;
+        column-gap: 0;
+        row-gap: clamp(1rem, 2.5vh, 1.5rem);
+        padding: clamp(0.75rem, 2vh, 1.25rem) 1.25rem clamp(1rem, 2.5vh, 1.5rem);
       }
       .hero-portrait { grid-column: 1; grid-row: 1; }
       .hero-portrait img {
-        /* Cap by remaining viewport AFTER reserving room for the text block.
-           ~280px reservation covers eyebrow + name + lifespan + prose + quote. */
-        max-width: min(80vw, 380px);
-        max-height: calc(100vh - var(--nav-h) - 280px);
-        max-height: calc(100svh - var(--nav-h) - 280px);
+        /* Hard cap: photo always uses ≤50svh on phones so the text below
+           has at least half the viewport for breathing room and never
+           collides with the image. */
+        max-width: min(78vw, 360px);
+        max-height: 50svh;
+        max-height: 50dvh;
       }
       .hero-text {
         grid-column: 1;
@@ -196,11 +201,13 @@
         align-items: center;
       }
     }
+    /* Even shorter or narrower phones: shrink photo a bit more */
     @media (max-width: 500px) {
       .hero { padding: 0.5rem 1rem 0.75rem; }
       .hero-portrait img {
-        max-height: calc(100vh - var(--nav-h) - 240px);
-        max-height: calc(100svh - var(--nav-h) - 240px);
+        max-width: 70vw;
+        max-height: 46svh;
+        max-height: 46dvh;
       }
     }
 
@@ -312,6 +319,36 @@
       font-family: "Noto Serif TC", serif;
       font-style: normal;
     }
+
+    /* ============== Bridge footer (full-bleed ink-wash painting) ============== */
+    .bridge-footer {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - var(--nav-h));
+      height: calc(100svh - var(--nav-h));
+      background: #ece5d4;
+      isolation: isolate;
+      overflow: hidden;
+    }
+    .bridge-stack {
+      position: absolute;
+      inset: 0;
+      margin-inline: auto;
+      /* The painting is 1536×1024 (3:2). Cap stack to that aspect so wider
+         screens show the full image with cream margins on the sides; narrower
+         screens use full width and crop a thin strip off the sides. */
+      max-width: calc((100vh - var(--nav-h)) * 1.5);
+      max-width: calc((100svh - var(--nav-h)) * 1.5);
+    }
+    .bridge-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
@@ -352,8 +389,15 @@
     </header>
   </main>
 
+  <footer class="bridge-footer" aria-label="Memorial bridge — ink-wash painting">
+    <div class="bridge-stack">
+      <img class="bridge-img" src="images/bridge/02_chinese_ink_wash_high.png" alt="Chinese ink-wash painting of a small bridge with calligraphy 張信德 above" />
+    </div>
+  </footer>
+
   <script>
     (function () {
+      // Language toggle
       var btns = document.querySelectorAll('.lang-btn');
       btns.forEach(function (btn) {
         btn.addEventListener('click', function () {
@@ -369,6 +413,16 @@
           });
         });
       });
+      // Subtle border on topnav once the hero scrolls under it
+      var nav = document.querySelector('.topnav');
+      if (nav) {
+        var onScroll = function () {
+          if (window.scrollY > 8) nav.classList.add('is-stuck');
+          else nav.classList.remove('is-stuck');
+        };
+        document.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      }
     })();
   </script>
 </body>
