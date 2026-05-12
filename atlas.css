@@ -246,7 +246,10 @@
 @media (max-width: 760px) {
   .atlas-body {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(220px, 38vh) minmax(0, 1fr);
+    /* Map row is generous on bigger phones but the chapter text needs the
+       majority of the height. Was 38vh — too tall on 6"–7" devices and
+       cut the body text in half. */
+    grid-template-rows: minmax(160px, 26vh) minmax(0, 1fr);
   }
 }
 

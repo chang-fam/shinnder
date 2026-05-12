@@ -1312,7 +1312,10 @@ figure.photo figcaption strong {
 }
 
 /* Single-letter view: only the active letter is visible */
-.tribute-stack { width: var(--col); margin: 0 auto; }
+/* Width caps at var(--col) but never exceeds the parent's content area —
+   the parent (.memoriam-main) has its own horizontal padding, so a fixed
+   var(--col) width overflows on phones. */
+.tribute-stack { width: 100%; max-width: var(--col); margin: 0 auto; }
 .tribute-stack .letter {
   width: 100%;
   margin: 0;
