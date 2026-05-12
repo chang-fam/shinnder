@@ -254,27 +254,44 @@
 }
 
 /* Short / landscape viewports (phone rotated sideways, split-screen,
-   etc.). The 2-column desktop layout breaks: the map fills the visible
-   area and the chapter panel is unreachable. Stack everything vertically
-   with a small map, and let the whole tab scroll. */
+   short windows). The 2-column desktop layout breaks: the map fills the
+   visible area and the chapter panel is unreachable. The prior fix only
+   tweaked the grid; the flex chain (.tab-view → .atlas-frame → .atlas-body
+   all flex: 1 1 auto with min-height: 0) was still forcing content to
+   collapse into the viewport.
+   Here we break out of flex entirely: everything becomes block, the map
+   is a fixed-size sliver at the top, and the chapter text below scrolls
+   naturally with the page. */
 @media (max-height: 500px) {
   .tab-view[data-tab="atlas"] {
-    min-height: calc(100vh - 60px);
+    display: block;
     height: auto;
+    min-height: calc(100vh - 60px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
+  .atlas-frame {
+    display: block;
+    flex: 0 0 auto;
+    min-height: 0;
+  }
   .atlas-body {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
+    display: block;
+    flex: 0 0 auto;
+    min-height: 0;
     overflow: visible;
   }
   .atlas-map {
-    height: 220px;
-    min-height: 180px;
+    display: block;
+    width: 100%;
+    height: 180px;
+    min-height: 0;
+    margin-bottom: 1rem;
   }
   .atlas-panel {
+    display: block;
     overflow: visible;
+    min-height: 0;
   }
 }
 
