@@ -263,7 +263,11 @@
    is a fixed-size sliver at the top, and the chapter text below scrolls
    naturally with the page. */
 @media (max-height: 500px) {
-  .tab-view[data-tab="atlas"] {
+  /* Only the active atlas tab should be visible; the base
+     .tab-view { display: none } / .is-active { display: block }
+     toggle still applies. Without `.is-active` here we'd unconditionally
+     show the atlas tab, pushing Tributes/Photos below the fold. */
+  .tab-view.is-active[data-tab="atlas"] {
     display: block;
     height: auto;
     min-height: calc(100vh - 60px);
