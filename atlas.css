@@ -253,6 +253,31 @@
   }
 }
 
+/* Short / landscape viewports (phone rotated sideways, split-screen,
+   etc.). The 2-column desktop layout breaks: the map fills the visible
+   area and the chapter panel is unreachable. Stack everything vertically
+   with a small map, and let the whole tab scroll. */
+@media (max-height: 500px) {
+  .tab-view[data-tab="atlas"] {
+    min-height: calc(100vh - 60px);
+    height: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .atlas-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    overflow: visible;
+  }
+  .atlas-map {
+    height: 220px;
+    min-height: 180px;
+  }
+  .atlas-panel {
+    overflow: visible;
+  }
+}
+
 /* =========================================================
    CHAPTER PANEL (right column)
    ========================================================= */

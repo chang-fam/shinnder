@@ -1175,7 +1175,10 @@ figure.photo figcaption strong {
 }
 
 .tribute-invite {
-  width: var(--col);
+  /* Cap at var(--col) but never exceed the padded parent
+     (same pattern as .tribute-stack). */
+  width: 100%;
+  max-width: var(--col);
   margin: clamp(2rem, 5vw, 3.5rem) auto 0;
   padding: 2rem;
   text-align: center;
@@ -1226,7 +1229,8 @@ figure.photo figcaption strong {
 /* Section-head when used inside the tributes layout: smaller and pushed
    below the picker, since each eulogy now carries its own large header. */
 .section-head-tributes {
-  width: var(--col);
+  width: 100%;
+  max-width: var(--col);
   margin: 0 auto clamp(1rem, 2.5vw, 1.5rem);
   text-align: left;
 }
@@ -1851,6 +1855,12 @@ figure.photo figcaption strong {
   .memoriam-stage {
     grid-template-columns: 1fr;
     gap: 0;
+  }
+  /* More generous horizontal padding on phone — was clamp(1.25rem, 3vw, 2.25rem)
+     which collapses to 1.25rem (20px) on a 390px viewport. The text felt
+     too close to the screen edge. */
+  .memoriam-main {
+    padding-inline: clamp(1.5rem, 6vw, 2rem);
   }
   .donggua-rail {
     position: static;

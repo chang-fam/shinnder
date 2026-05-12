@@ -47,7 +47,11 @@
 
     document.querySelectorAll('[data-en], [data-zh]').forEach((el) => {
       const txt = el.getAttribute('data-' + lang);
-      if (txt != null) el.textContent = txt;
+      if (txt == null) return;
+      // Use innerHTML so translations can contain inline markup
+      // (e.g. <em>, <strong>) for the eulogies. Static, author-controlled
+      // content — no XSS surface.
+      el.innerHTML = txt;
     });
     document.querySelectorAll('.lang-btn').forEach((btn) => {
       btn.setAttribute('aria-pressed', btn.dataset.lang === lang ? 'true' : 'false');
