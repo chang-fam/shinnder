@@ -1788,35 +1788,52 @@ figure.photo figcaption strong {
   list-style: none;
   margin: 0;
   padding: 0.25rem 0.4rem;
-  /* Scrollable when long. Soft mask-fade at top/bottom signals there's
-     more to scroll without showing a hard scrollbar. The clamp shrinks
-     the list on shorter viewports so the whole rail (vine + counter +
-     form + roster) still fits above the fold on a 1366×768 laptop. */
-  max-height: clamp(140px, calc(100vh - 660px), 240px);
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(120, 92, 55, 0.3) transparent;
-  mask-image: linear-gradient(
-    180deg,
-    transparent 0,
-    #000 12px,
-    #000 calc(100% - 12px),
-    transparent 100%
-  );
-  -webkit-mask-image: linear-gradient(
-    180deg,
-    transparent 0,
-    #000 12px,
-    #000 calc(100% - 12px),
-    transparent 100%
-  );
+  /* Paginated rather than scrolled — see the roster controller in
+     main.js. A fixed page size keeps the rail (vine + counter + form +
+     roster) a predictable height; min-height reserves room for a full
+     page so the prev/next control doesn't jump between pages. */
+  min-height: 10.5rem;
 }
-.grower-roster-list::-webkit-scrollbar { width: 6px; }
-.grower-roster-list::-webkit-scrollbar-thumb {
-  background: rgba(120, 92, 55, 0.28);
-  border-radius: 3px;
+
+/* Pagination control under the roster — subtle prev / next + "1 / 3". */
+.grower-roster-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
 }
-.grower-roster-list::-webkit-scrollbar-track { background: transparent; }
+.grower-roster-nav[hidden] { display: none; }
+.grower-roster-arrow {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--serif-display);
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--vermilion);
+  opacity: 0.65;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  transition: opacity 160ms ease, background 160ms ease;
+}
+.grower-roster-arrow:hover {
+  opacity: 1;
+  background: rgba(168, 74, 46, 0.06);
+}
+.grower-roster-arrow:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+  opacity: 1;
+}
+.grower-roster-page {
+  font-family: var(--sans);
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: var(--muted-2);
+  font-variant-numeric: tabular-nums;
+}
 
 .grower-roster-list li {
   font-family: var(--serif-display);
@@ -1868,7 +1885,6 @@ figure.photo figcaption strong {
     max-width: 240px;
   }
   .grower-form, .grower-roster { max-width: 240px; }
-  .grower-roster-list { max-height: 200px; }
 }
 
 /* =========================================================

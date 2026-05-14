@@ -624,6 +624,14 @@
   let grown = 0;
   let busy = false;
   let stageScales = { ...STAGE_BASE_SCALES };
+
+  // Roster pagination + fair-ordering state. See syncRoster / renderRoster.
+  const ROSTER_PAGE_SIZE = 6;
+  let rosterEntries = [];   // growers in their established display order
+  let rosterPage = 0;
+  let rosterPinKey = null;  // visitor's own name, kept pinned to the top
+  let rosterNav = null;     // lazily-built prev/next control
+
   const splashSound = new Audio('assets/water-drop.wav');
   splashSound.preload = 'auto';
 
@@ -674,23 +682,120 @@
     }[c]));
   }
 
-  // Render the growers list. The roster is hidden via .has-names when
-  // empty, which swaps in the "No one yet" line.
-  function renderRoster(growers) {
-    if (!rosterEl || !rosterList) return;
+  // Fisher–Yates shuffle (returns a new array).
+  function shuffled(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // Normalize a name to a stable key — mirrors the worker's sanitize
+  // (collapse whitespace, case-fold) so the visitor's own entry matches.
+  function rosterKey(s) {
+    return String(s || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+
+  // Reconcile a fresh list of growers from the worker into the display
+  // order held in `rosterEntries`.
+  //   opts.shuffle  — page load: randomize the whole roster so no one is
+  //                   perpetually listed first ("promote equivalence").
+  //   opts.pinName  — the visitor just grew one under this name: keep it
+  //                   pinned to the top, for them, this session.
+  // Between those two events the order is held stable: counts refresh in
+  // place, brand-new names are shuffled in at the end, vanished names
+  // drop out — so the roster doesn't reshuffle under the reader on every
+  // grow.
+  function syncRoster(growers, opts) {
+    opts = opts || {};
     const list = Array.isArray(growers) ? growers : [];
-    if (!list.length) {
+    const byKey = new Map(list.map((g) => [rosterKey(g.name), g]));
+    if (opts.pinName) rosterPinKey = rosterKey(opts.pinName);
+
+    if (opts.shuffle) {
+      rosterEntries = shuffled(list);
+    } else {
+      const seen = new Set();
+      const kept = [];
+      for (const e of rosterEntries) {
+        const k = rosterKey(e.name);
+        const fresh = byKey.get(k);
+        if (fresh && !seen.has(k)) { kept.push(fresh); seen.add(k); }
+      }
+      const added = shuffled(list.filter((g) => !seen.has(rosterKey(g.name))));
+      rosterEntries = kept.concat(added);
+    }
+
+    if (rosterPinKey) {
+      const idx = rosterEntries.findIndex((e) => rosterKey(e.name) === rosterPinKey);
+      if (idx > 0) {
+        const [mine] = rosterEntries.splice(idx, 1);
+        rosterEntries.unshift(mine);
+      }
+    }
+
+    if (opts.pinName) rosterPage = 0;   // jump to the page with their name
+    renderRoster();
+  }
+
+  // Build / refresh the prev–next control. Hidden when one page or fewer.
+  function renderRosterNav(pageCount) {
+    if (!rosterList) return;
+    if (pageCount <= 1) {
+      if (rosterNav) rosterNav.hidden = true;
+      return;
+    }
+    if (!rosterNav) {
+      rosterNav = document.createElement('div');
+      rosterNav.className = 'grower-roster-nav';
+      rosterNav.innerHTML =
+        '<button type="button" class="grower-roster-arrow" data-dir="-1" ' +
+        'aria-label="Previous names">‹</button>' +
+        '<span class="grower-roster-page" aria-live="polite"></span>' +
+        '<button type="button" class="grower-roster-arrow" data-dir="1" ' +
+        'aria-label="More names">›</button>';
+      rosterList.insertAdjacentElement('afterend', rosterNav);
+      rosterNav.addEventListener('click', (e) => {
+        const btn = e.target.closest('.grower-roster-arrow');
+        if (!btn) return;
+        const pc = Math.ceil(rosterEntries.length / ROSTER_PAGE_SIZE) || 1;
+        rosterPage = (rosterPage + Number(btn.dataset.dir) + pc) % pc;
+        renderRoster();
+      });
+    }
+    rosterNav.hidden = false;
+    rosterNav.querySelector('.grower-roster-page').textContent =
+      (rosterPage + 1) + ' / ' + pageCount;
+  }
+
+  // Render the current page of the roster. The roster is hidden via
+  // .has-names when empty, which swaps in the "No one yet" line.
+  function renderRoster() {
+    if (!rosterEl || !rosterList) return;
+    if (!rosterEntries.length) {
       rosterEl.classList.remove('has-names');
       rosterList.innerHTML = '';
+      if (rosterNav) rosterNav.hidden = true;
       return;
     }
     rosterEl.classList.add('has-names');
-    rosterList.innerHTML = list.map((g) => {
-      const name = escapeHtml(g.name);
-      const count = Number(g.count) || 1;
-      return `<li><span class="grower-name">${name}</span>` +
-             `<span class="grower-count" data-count="${count}">${count}</span></li>`;
-    }).join('');
+
+    const pageCount = Math.ceil(rosterEntries.length / ROSTER_PAGE_SIZE);
+    rosterPage = clampN(rosterPage, 0, pageCount - 1);
+    const start = rosterPage * ROSTER_PAGE_SIZE;
+
+    rosterList.innerHTML = rosterEntries
+      .slice(start, start + ROSTER_PAGE_SIZE)
+      .map((g) => {
+        const name = escapeHtml(g.name);
+        const count = Number(g.count) || 1;
+        return `<li><span class="grower-name">${name}</span>` +
+               `<span class="grower-count" data-count="${count}">${count}</span></li>`;
+      }).join('');
+
+    renderRosterNav(pageCount);
   }
 
   async function loadGlobalState() {
@@ -702,7 +807,7 @@
       // Quiet update on first paint — no celebratory pop.
       grown = Number(state.total) || 0;
       counterNum.textContent = String(grown);
-      renderRoster(state.growers);
+      syncRoster(state.growers, { shuffle: true });
     } catch (_) {
       // Network error / blocked / no worker yet — keep local-only counter.
     }
@@ -731,7 +836,7 @@
       // re-triggering the pop animation.
       grown = Number(state.total) || grown;
       counterNum.textContent = String(grown);
-      renderRoster(state.growers);
+      syncRoster(state.growers, { pinName: name });
     } catch (_) {
       // Already bumped locally; nothing else to do.
     }
